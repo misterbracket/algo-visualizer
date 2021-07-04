@@ -1,39 +1,48 @@
 import { useState, useEffect } from 'react'
+import {
+  Box, Flex, Spacer, Slider, Text,
+  SliderTrack,
+  SliderFilledTrack,
+  SliderThumb, Heading
+} from "@chakra-ui/react"
 
+import { Button, ButtonGroup } from "@chakra-ui/react"
 import { getMergeSortAnimations } from '../../sortingAlgorithms/sortingAlgorithms';
 // Change this value for the speed of the animations.
-const ANIMATION_SPEED_MS = 1;
+const ANIMATION_SPEED_MS = 10;
 
-// Change this value for the number of bars (value) in the array.
-const NUMBER_OF_ARRAY_BARS = 310;
+//Height of Single Bar
+const BAR_HEIGHT = 530;
 
 // This is the main color of the array bars.
 const PRIMARY_COLOR = 'hotpink';
 
 // This is the color of array bars that are being compared throughout the animations.
-const SECONDARY_COLOR = 'golenrod';
+const SECONDARY_COLOR = 'rebeccapurple';
 
-// From https://stackoverflow.com/questions/4959975/generate-random-number-between-two-numbers-in-javascript
 function randomIntFromInterval(min: number, max: number) {
-  // min and max included
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-function initializeArray() {
-  const array = [];
-  for (let i = 0; i < NUMBER_OF_ARRAY_BARS; i++) {
-    array.push(randomIntFromInterval(5, 730));
-  }
-  return array
-}
+
 
 const SortingVisualizer = () => {
+  const [numberOfBars, setNumberOfBars] = useState(50)
   const [array, setArray] = useState<Array<number>>(initializeArray)
+  const [barWidth, setBarWidth] = useState(3)
+
+  function initializeArray() {
+    const array = [];
+    for (let i = 0; i < numberOfBars; i++) {
+      array.push(randomIntFromInterval(5, BAR_HEIGHT));
+    }
+    return array
+  }
 
 
   useEffect(() => {
     resetArray();
-  }, [])
+  }, [numberOfBars])
 
 
   function resetArray() {
@@ -80,29 +89,61 @@ const SortingVisualizer = () => {
 
 
   return (
-    <div style={{
-      position: "absolute",
-      left: "100px"
-    }}>
-      {array.map((value, idx) => (
-        <div
-          className="array-bar"
-          style={{
-            backgroundColor: PRIMARY_COLOR,
-            height: `${value}px`,
-            width: "2px",
-            display: "inline-block",
-            margin: "0 1px"
-          }}
-          key={idx}
-        ></div>
-      ))}
-      <button onClick={resetArray}>Generate New Array</button>
-      <button onClick={mergeSort}>Merge Sort</button>
-      <button onClick={quickSort}>Quick Sort</button>
-      <button onClick={heapSort}>Heap Sort</button>
-      <button onClick={bubbleSort}>Bubble Sort</button>
-    </div>
+    <>
+      <Heading padding={"4rem"}>Sorting Visualizer</Heading>
+      <Flex width={"100%"} direction={"column"} >
+        <Flex align={"flex-end"} justify={"center"} height={`${BAR_HEIGHT}px`} width={"100%"}>
+          {array.map((value, idx) => (
+            <>
+              <Box
+                className="array-bar"
+                style={{
+                  backgroundColor: PRIMARY_COLOR,
+                  height: `${value}px`,
+                  width: `${barWidth}px`,
+                  display: "inline-block",
+                }}
+                key={idx}
+              ></Box>
+              <Spacer />
+            </>
+          ))}
+        </Flex>
+
+        <Flex direction={'column'} paddingTop={"2rem"} paddingBottom={"3rem"}>
+          <ButtonGroup display={"flex"} flexWrap={"wrap"} width={"100%"} paddingBottom={"0.5rem"}>
+            <Button background={"goldenrod"} onClick={resetArray}>Generate New Array</Button>
+            <Button style={{ marginLeft: "auto" }} onClick={mergeSort}>Merge Sort</Button>
+            <Button onClick={quickSort}>Quick Sort</Button>
+            <Button onClick={heapSort}>Heap Sort</Button>
+            <Button onClick={bubbleSort}>Bubble Sort</Button>
+          </ButtonGroup>
+          <ButtonGroup paddingTop={"0.5rem"}>
+
+
+            <Flex width={"100%"} direction={"column"}>
+              <Text as={"label"} htmlFor={"bar-width-slider"}>Bar Width</Text>
+              <Slider aria-label="bar-width-slider" name={"bar-width-slider"} colorScheme="pink" defaultValue={barWidth} min={2} max={5} onChange={width => setBarWidth(width)}>
+                <SliderTrack>
+                  <SliderFilledTrack />
+                </SliderTrack>
+                <SliderThumb />
+              </Slider>
+            </Flex>
+            <Spacer />
+            <Flex width={"100%"} direction={"column"}>
+              <Text as={"label"} htmlFor={"bar-number-slider"}>Number of Bars</Text>
+              <Slider aria-label="bar-number-slider" colorScheme="pink" defaultValue={numberOfBars} min={10} max={100} onChange={number => setNumberOfBars(number)}>
+                <SliderTrack>
+                  <SliderFilledTrack />
+                </SliderTrack>
+                <SliderThumb />
+              </Slider>
+            </Flex>
+          </ButtonGroup>
+        </Flex>
+      </Flex>
+    </>
   );
 }
 
