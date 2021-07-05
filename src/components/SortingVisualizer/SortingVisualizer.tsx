@@ -8,8 +8,6 @@ import {
 
 import { Button, ButtonGroup } from "@chakra-ui/react"
 import { getMergeSortAnimations } from '../../sortingAlgorithms/sortingAlgorithms';
-// Change this value for the speed of the animations.
-const ANIMATION_SPEED_MS = 15;
 
 //Height of Single Bar
 const BAR_HEIGHT = 530;
@@ -25,36 +23,37 @@ function randomIntFromInterval(min: number, max: number) {
 }
 
 
+function initializeState() {
+  const numberOfBars = 50
+  const barWidth = 3
+  const animationSpeed = 15
+  const array = [];
+  for (let i = 0; i < numberOfBars; i++) {
+    array.push(randomIntFromInterval(5, BAR_HEIGHT));
+  }
+  return {
+    numberOfBars,
+    array,
+    barWidth,
+    animationSpeed
+  }
+}
+
 
 const SortingVisualizer = () => {
-  const [numberOfBars, setNumberOfBars] = useState(50)
-  const [array, setArray] = useState<Array<number>>(initializeArray)
-  const [barWidth, setBarWidth] = useState(3)
 
-  const state = {
-      numberOfBars:
-      array:
-      barWidth;
-      animationSpeed
-  }
-
-  function initializeArray() {
-    const array = [];
-    for (let i = 0; i < numberOfBars; i++) {
-      array.push(randomIntFromInterval(5, BAR_HEIGHT));
-    }
-    return array
-  }
+  const [state, setState] = useState(initializeState)
+  const { numberOfBars, array, barWidth, animationSpeed } = state
 
 
   useEffect(() => {
     resetArray();
-  }, [numberOfBars])
+  }, [numberOfBars, barWidth, animationSpeed])
 
 
   function resetArray() {
-    const array = initializeArray()
-    setArray(array);
+    const { array } = initializeState()
+    setState({ ...state, array });
   }
 
   function mergeSort() {
@@ -70,13 +69,13 @@ const SortingVisualizer = () => {
         setTimeout(() => {
           barOneStyle.backgroundColor = color;
           barTwoStyle.backgroundColor = color;
-        }, i * ANIMATION_SPEED_MS);
+        }, i * animationSpeed);
       } else {
         setTimeout(() => {
           const [barOneIdx, newHeight] = animations[i];
           const barOneStyle = arrayBars[barOneIdx].style;
           barOneStyle.height = `${newHeight}px`;
-        }, i * ANIMATION_SPEED_MS);
+        }, i * animationSpeed);
       }
     }
   }
@@ -97,7 +96,7 @@ const SortingVisualizer = () => {
 
   return (
     <>
-      <Heading padding={"4rem"}>Sorting Visualizer</Heading>
+      <Heading size="2xl" padding={"4rem"}>Sorting Visualizer</Heading>
       <Flex width={"100%"} direction={"column"} >
         <Flex align={"flex-end"} justify={"center"} height={`${BAR_HEIGHT}px`} width={"100%"}>
           {array.map((value, idx) => (
@@ -128,21 +127,38 @@ const SortingVisualizer = () => {
           <ButtonGroup paddingTop={"0.5rem"}>
             <Flex width={"100%"} direction={"column"}>
               <Text as={"label"} htmlFor={"bar-width-slider"}>Bar Width</Text>
-              <Slider colorScheme="teal" aria-label="bar-width-slider" name={"bar-width-slider"} defaultValue={barWidth} min={2} max={5} onChange={width => setBarWidth(width)}>
+              <Slider colorScheme="teal" aria-label="bar-width-slider" name={"bar-width-slider"} defaultValue={barWidth} min={2} max={5} onChange={width => setState({ ...state, barWidth: width })}>
                 <SliderTrack>
                   <SliderFilledTrack />
                 </SliderTrack>
-                <SliderThumb />
+                <SliderThumb boxSize={6}>
+                  <Box color="tomato" />
+                </SliderThumb>
               </Slider>
             </Flex>
             <Spacer />
             <Flex width={"100%"} direction={"column"}>
               <Text as={"label"} htmlFor={"bar-number-slider"}>Number of Bars</Text>
-              <Slider colorScheme="teal" aria-label="bar-number-slider" defaultValue={numberOfBars} min={10} max={100} onChange={number => setNumberOfBars(number)}>
+              <Slider colorScheme="teal" aria-label="bar-number-slider" defaultValue={numberOfBars} min={10} max={100} onChange={number => setState({ ...state, numberOfBars: number })}>
                 <SliderTrack>
                   <SliderFilledTrack />
                 </SliderTrack>
-                <SliderThumb />
+                <SliderThumb boxSize={6}>
+                  <Box color="tomato" />
+                </SliderThumb>
+              </Slider>
+            </Flex>
+            <Spacer />
+            <Flex width={"100%"} direction={"column"}>
+              <Text as={"label"} htmlFor={"bar-number-slider"}>Animation Speed</Text>
+              <Slider colorScheme="teal" aria-label="bar-number-slider" defaultValue={animationSpeed} min={15} max={1500} onChange={number => setState({ ...state, animationSpeed: number })}>
+                <SliderTrack>
+                  <SliderFilledTrack />
+                </SliderTrack>
+                <SliderThumb boxSize={6}>
+                  <Box color="tomato" />
+                </SliderThumb>
+
               </Slider>
             </Flex>
           </ButtonGroup>

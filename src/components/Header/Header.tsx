@@ -1,13 +1,18 @@
 import { useColorMode } from "@chakra-ui/color-mode"
-import { Button } from "@chakra-ui/react"
+import { Icon, IconButton } from "@chakra-ui/react"
+import { CgSun, CgMoon } from "react-icons/cg"
 
 const Header = () => {
   const { colorMode, toggleColorMode } = useColorMode()
   return (
     <header>
-      <Button onClick={toggleColorMode}>
-        Toggle {colorMode === "light" ? "Dark" : "Light"}
-      </Button>
+      <IconButton variant="outline"
+        colorScheme="teal"
+        aria-label="Change  Color Scheme"
+        fontSize="20px" style={{ position: "absolute", right: "20px", top: "20px" }}
+        icon={<Icon as={colorMode === "light" ? CgSun : CgMoon} />}
+        onClick={toggleColorMode}>
+      </IconButton>
     </header>
   )
 };

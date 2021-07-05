@@ -5,7 +5,7 @@ import Header from "./components/Header"
 function App() {
   return (
 
-    <Container maxW="container.lg" height={"100%"} centerContent >
+    <Container position={"relative"} maxW="container.lg" height={"100%"} centerContent >
       <Header />
       <SortingVisualizer></SortingVisualizer>
     </Container>
