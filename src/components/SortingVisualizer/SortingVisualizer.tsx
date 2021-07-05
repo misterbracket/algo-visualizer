@@ -9,7 +9,7 @@ import {
 import { Button, ButtonGroup } from "@chakra-ui/react"
 import { getMergeSortAnimations } from '../../sortingAlgorithms/sortingAlgorithms';
 // Change this value for the speed of the animations.
-const ANIMATION_SPEED_MS = 10;
+const ANIMATION_SPEED_MS = 15;
 
 //Height of Single Bar
 const BAR_HEIGHT = 530;
@@ -30,6 +30,13 @@ const SortingVisualizer = () => {
   const [numberOfBars, setNumberOfBars] = useState(50)
   const [array, setArray] = useState<Array<number>>(initializeArray)
   const [barWidth, setBarWidth] = useState(3)
+
+  const state = {
+      numberOfBars:
+      array:
+      barWidth;
+      animationSpeed
+  }
 
   function initializeArray() {
     const array = [];
@@ -112,18 +119,16 @@ const SortingVisualizer = () => {
 
         <Flex direction={'column'} paddingTop={"2rem"} paddingBottom={"3rem"}>
           <ButtonGroup display={"flex"} flexWrap={"wrap"} width={"100%"} paddingBottom={"0.5rem"}>
-            <Button background={"goldenrod"} onClick={resetArray}>Generate New Array</Button>
-            <Button style={{ marginLeft: "auto" }} onClick={mergeSort}>Merge Sort</Button>
-            <Button onClick={quickSort}>Quick Sort</Button>
-            <Button onClick={heapSort}>Heap Sort</Button>
-            <Button onClick={bubbleSort}>Bubble Sort</Button>
+            <Button colorScheme="yellow" onClick={resetArray}>Generate New Array</Button>
+            <Button colorScheme="teal" style={{ marginLeft: "auto" }} onClick={mergeSort}>Merge Sort</Button>
+            <Button colorScheme="teal" onClick={quickSort}>Quick Sort</Button>
+            <Button colorScheme="teal" onClick={heapSort}>Heap Sort</Button>
+            <Button colorScheme="teal" onClick={bubbleSort}>Bubble Sort</Button>
           </ButtonGroup>
           <ButtonGroup paddingTop={"0.5rem"}>
-
-
             <Flex width={"100%"} direction={"column"}>
               <Text as={"label"} htmlFor={"bar-width-slider"}>Bar Width</Text>
-              <Slider aria-label="bar-width-slider" name={"bar-width-slider"} colorScheme="pink" defaultValue={barWidth} min={2} max={5} onChange={width => setBarWidth(width)}>
+              <Slider colorScheme="teal" aria-label="bar-width-slider" name={"bar-width-slider"} defaultValue={barWidth} min={2} max={5} onChange={width => setBarWidth(width)}>
                 <SliderTrack>
                   <SliderFilledTrack />
                 </SliderTrack>
@@ -133,7 +138,7 @@ const SortingVisualizer = () => {
             <Spacer />
             <Flex width={"100%"} direction={"column"}>
               <Text as={"label"} htmlFor={"bar-number-slider"}>Number of Bars</Text>
-              <Slider aria-label="bar-number-slider" colorScheme="pink" defaultValue={numberOfBars} min={10} max={100} onChange={number => setNumberOfBars(number)}>
+              <Slider colorScheme="teal" aria-label="bar-number-slider" defaultValue={numberOfBars} min={10} max={100} onChange={number => setNumberOfBars(number)}>
                 <SliderTrack>
                   <SliderFilledTrack />
                 </SliderTrack>
