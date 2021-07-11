@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import {
   Box, Flex, Spacer, Slider, Text,
   SliderTrack,
   SliderFilledTrack,
-  SliderThumb, Heading
+  SliderThumb, Heading, Select
 } from "@chakra-ui/react"
 
 import { Button, ButtonGroup } from "@chakra-ui/react"
@@ -25,7 +25,7 @@ function randomIntFromInterval(min: number, max: number) {
 
 function initializeState() {
   const numberOfBars = 50
-  const barWidth = 3
+  const barWidth = "3"
   const animationSpeed = 15
   const array = [];
   for (let i = 0; i < numberOfBars; i++) {
@@ -45,21 +45,55 @@ const SortingVisualizer = () => {
   const [state, setState] = useState(initializeState)
   const { numberOfBars, array, barWidth, animationSpeed } = state
 
-
-  useEffect(() => {
-    resetArray();
-  }, [numberOfBars, barWidth, animationSpeed])
+  const arrayBarRefs = useRef<HTMLDivElement[]>([]);
 
 
-  function resetArray() {
+  // const setRef = useMemo(() => {
+  //   return array
+  // }, [])
+  // const originalArray = useRef(setRef)
+
+
+  const resetArray = () => {
     const { array } = initializeState()
     setState({ ...state, array });
   }
 
+
+  useEffect(() => {
+
+    if (state.array.length !== 0) return
+    const { array } = initializeState()
+    setState({ ...state, array });
+  }, [state])
+
+
+  // function test() {
+  //   const currArray = array
+  //   const orArray = originalArray.current
+  //   console.log({ orArray })
+  //   console.log({ currArray })
+
+  //   let filteredArray: Array<number> = []
+
+  //   const filterValues = (input: Array<number>, checkNumber: number) => {
+  //     if (input === []) return
+  //     const result = input.filter(value => value === checkNumber);
+  //     filteredArray = result
+  //     return filterValues(result)
+  //   }
+
+  //   if (filteredArray === []) {
+  //     console.log("💯 Check complete, all numbers present")
+  //   }
+  // }
+
+
   function mergeSort() {
+
     const animations = getMergeSortAnimations(array);
     for (let i = 0; i < animations.length; i++) {
-      const arrayBars = document.getElementsByClassName('array-bar') as HTMLCollectionOf<HTMLElement>;
+      const arrayBars = arrayBarRefs.current
       const isColorChange = i % 3 !== 2;
       if (isColorChange) {
         const [barOneIdx, barTwoIdx] = animations[i];
@@ -80,17 +114,17 @@ const SortingVisualizer = () => {
     }
   }
 
-  function quickSort() {
-    // We leave it as an exercise to the viewer of this code to implement this method.
-  }
+  // function quickSort() {
+  //   // We leave it as an exercise to the viewer of this code to implement this method.
+  // }
 
-  function heapSort() {
-    // We leave it as an exercise to the viewer of this code to implement this method.
-  }
+  // function heapSort() {
+  //   // We leave it as an exercise to the viewer of this code to implement this method.
+  // }
 
-  function bubbleSort() {
-    // We leave it as an exercise to the viewer of this code to implement this method.
-  }
+  // function bubbleSort() {
+  //   // We leave it as an exercise to the viewer of this code to implement this method.
+  // }
 
 
 
@@ -98,10 +132,11 @@ const SortingVisualizer = () => {
     <>
       <Heading size="2xl" padding={"4rem"}>Sorting Visualizer</Heading>
       <Flex width={"100%"} direction={"column"} >
-        <Flex align={"flex-end"} justify={"center"} height={`${BAR_HEIGHT}px`} width={"100%"}>
+        <Flex align={"flex-end"} justify={"space-around"} height={`${BAR_HEIGHT}px`} width={"100%"}>
           {array.map((value, idx) => (
-            <>
+            <div key={idx}>
               <Box
+                ref={(element) => { arrayBarRefs.current[idx] = element! }}
                 className="array-bar"
                 style={{
                   backgroundColor: PRIMARY_COLOR,
@@ -109,10 +144,8 @@ const SortingVisualizer = () => {
                   width: `${barWidth}px`,
                   display: "inline-block",
                 }}
-                key={idx}
               ></Box>
-              <Spacer />
-            </>
+            </div>
           ))}
         </Flex>
 
@@ -120,26 +153,33 @@ const SortingVisualizer = () => {
           <ButtonGroup display={"flex"} flexWrap={"wrap"} width={"100%"} paddingBottom={"0.5rem"}>
             <Button colorScheme="yellow" onClick={resetArray}>Generate New Array</Button>
             <Button colorScheme="teal" style={{ marginLeft: "auto" }} onClick={mergeSort}>Merge Sort</Button>
-            <Button colorScheme="teal" onClick={quickSort}>Quick Sort</Button>
+            {/* <Button colorScheme="teal" onClick={quickSort}>Quick Sort</Button>
             <Button colorScheme="teal" onClick={heapSort}>Heap Sort</Button>
             <Button colorScheme="teal" onClick={bubbleSort}>Bubble Sort</Button>
+            <Button colorScheme="teal" onClick={test}>Test</Button> */}
           </ButtonGroup>
           <ButtonGroup paddingTop={"0.5rem"}>
             <Flex width={"100%"} direction={"column"}>
-              <Text as={"label"} htmlFor={"bar-width-slider"}>Bar Width</Text>
-              <Slider colorScheme="teal" aria-label="bar-width-slider" name={"bar-width-slider"} defaultValue={barWidth} min={2} max={5} onChange={width => setState({ ...state, barWidth: width })}>
+              <Text as={"label"} htmlFor={"bar-width-select"}>Bar Width</Text>
+              <Select height={10} placeholder="Select Bar Width" aria-label="bar-width-select" name={"bar-width-select"} onChange={event => setState({ ...state, barWidth: event.target.value })}>
+                <option value={"2"}>Extra Thin</option>
+                <option value={"3"}>Thin</option>
+                <option value={"4"}>Medium</option>
+                <option value={"5"}>Large</option>
+              </Select>
+              {/* <Slider colorScheme="teal" aria-label="bar-width-slider" name={"bar-width-slider"} defaultValue={barWidth} min={2} max={5} onChange={width => setState({ ...state, barWidth: width })}>
                 <SliderTrack>
                   <SliderFilledTrack />
                 </SliderTrack>
                 <SliderThumb boxSize={6}>
                   <Box color="tomato" />
                 </SliderThumb>
-              </Slider>
+              </Slider> */}
             </Flex>
             <Spacer />
             <Flex width={"100%"} direction={"column"}>
               <Text as={"label"} htmlFor={"bar-number-slider"}>Number of Bars</Text>
-              <Slider colorScheme="teal" aria-label="bar-number-slider" defaultValue={numberOfBars} min={10} max={100} onChange={number => setState({ ...state, numberOfBars: number })}>
+              <Slider height={10} colorScheme="teal" aria-label="bar-number-slider" defaultValue={numberOfBars} min={10} max={100} onChange={number => setState({ ...state, numberOfBars: number })}>
                 <SliderTrack>
                   <SliderFilledTrack />
                 </SliderTrack>
@@ -151,7 +191,7 @@ const SortingVisualizer = () => {
             <Spacer />
             <Flex width={"100%"} direction={"column"}>
               <Text as={"label"} htmlFor={"bar-number-slider"}>Animation Speed</Text>
-              <Slider colorScheme="teal" aria-label="bar-number-slider" defaultValue={animationSpeed} min={15} max={1500} onChange={number => setState({ ...state, animationSpeed: number })}>
+              <Slider height={10} colorScheme="teal" aria-label="bar-number-slider" defaultValue={animationSpeed} min={15} max={1500} onChange={number => setState({ ...state, animationSpeed: number })}>
                 <SliderTrack>
                   <SliderFilledTrack />
                 </SliderTrack>
@@ -161,9 +201,9 @@ const SortingVisualizer = () => {
 
               </Slider>
             </Flex>
-          </ButtonGroup>
-        </Flex>
-      </Flex>
+          </ButtonGroup >
+        </Flex >
+      </Flex >
     </>
   );
 }
