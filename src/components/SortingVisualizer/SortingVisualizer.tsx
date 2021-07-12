@@ -41,11 +41,12 @@ function initializeState({ numberOfBars = 50, barWidth = "3", animationSpeed = 1
 const SortingVisualizer = () => {
 
   const [state, setState] = useState(() => initializeState({}))
+  const [isAnimationRunning, setIsAnimationRunning] = useState(false)
   const { numberOfBars, array, barWidth, animationSpeed } = state
 
-  const arrayBarRefs = useRef<HTMLDivElement[]>([]);
+  const arrayBarDivsRefs = useRef<HTMLDivElement[]>([]);
+  const arrayRef = useRef(array);
   const numberOfBarsRef = useRef(numberOfBars)
-  const isAnimationRunningRef = useRef(false)
   const originalArrayRef = useRef([...array])
 
 
@@ -53,6 +54,7 @@ const SortingVisualizer = () => {
     const { array } = initializeState({ numberOfBars })
     setState({ ...state, array });
     originalArrayRef.current = [...array]
+    arrayRef.current = [...array]
     numberOfBarsRef.current = numberOfBars
   }
 
@@ -62,6 +64,7 @@ const SortingVisualizer = () => {
       const { array } = initializeState({ numberOfBars })
       setState({ ...state, array });
       originalArrayRef.current = [...array]
+      arrayRef.current = [...array]
       numberOfBarsRef.current = numberOfBars
     }
   }, [state, numberOfBars])
@@ -82,16 +85,11 @@ const SortingVisualizer = () => {
     }
   }
 
-
   //TODO: Should be a promise
   function mergeSort() {
-
-    if (isAnimationRunningRef.current) return
-    isAnimationRunningRef.current = true
-
     const animations = getMergeSortAnimations(array);
     for (let i = 0; i < animations.length; i++) {
-      const arrayBars = arrayBarRefs.current
+      const arrayBars = arrayBarDivsRefs.current
       const isColorChange = i % 3 !== 2;
       if (isColorChange) {
         const [barOneIdx, barTwoIdx] = animations[i];
@@ -110,8 +108,9 @@ const SortingVisualizer = () => {
         }, i * animationSpeed);
       }
     }
+    setIsAnimationRunning(true)
     setTimeout(() => {
-      isAnimationRunningRef.current = false
+      setIsAnimationRunning(false)
     }, animations.length * animationSpeed)
   }
 
@@ -134,10 +133,10 @@ const SortingVisualizer = () => {
       <Heading size="2xl" padding={"4rem"}>Sorting Visualizer</Heading>
       <Flex width={"100%"} direction={"column"} >
         <Flex align={"flex-end"} justify={"space-around"} height={`${BAR_HEIGHT}px`} width={"100%"}>
-          {array.map((value, idx) => (
+          {arrayRef.current.map((value, idx) => (
             <div key={idx}>
               <Box
-                ref={(element) => { arrayBarRefs.current[idx] = element! }}
+                ref={(element) => { arrayBarDivsRefs.current[idx] = element! }}
                 className="array-bar"
                 style={{
                   backgroundColor: PRIMARY_COLOR,
@@ -153,7 +152,7 @@ const SortingVisualizer = () => {
         <Flex direction={'column'} paddingTop={"2rem"} paddingBottom={"3rem"}>
           <ButtonGroup display={"flex"} flexWrap={"wrap"} width={"100%"} paddingBottom={"0.5rem"}>
             <Button colorScheme="yellow" onClick={resetArray}>Generate New Array</Button>
-            <Button colorScheme="teal" variant={"outline"} style={{ marginLeft: "auto" }} onClick={mergeSort}>Merge Sort</Button>
+            <Button isDisabled={isAnimationRunning} colorScheme="teal" variant={"outline"} style={{ marginLeft: "auto" }} onClick={mergeSort}>Merge Sort</Button>
             {/* <Button colorScheme="teal" onClick={quickSort}>Quick Sort</Button>
             <Button colorScheme="teal" onClick={heapSort}>Heap Sort</Button>
             <Button colorScheme="teal" onClick={bubbleSort}>Bubble Sort</Button>*/}
@@ -172,7 +171,7 @@ const SortingVisualizer = () => {
             <Spacer />
             <Flex width={"100%"} direction={"column"}>
               <Text as={"label"} htmlFor={"bar-number-slider"}>Number of Bars</Text>
-              <Slider height={10} colorScheme="teal" aria-label="bar-number-slider" defaultValue={numberOfBars} min={10} max={100} onChange={number => setState({ ...state, numberOfBars: number })}>
+              <Slider height={10} disabled={isAnimationRunning} colorScheme="teal" aria-label="bar-number-slider" defaultValue={numberOfBars} min={10} max={100} onChange={number => setState({ ...state, numberOfBars: number })}>
                 <SliderTrack>
                   <SliderFilledTrack />
                 </SliderTrack>
@@ -184,7 +183,7 @@ const SortingVisualizer = () => {
             <Spacer />
             <Flex width={"100%"} direction={"column"}>
               <Text as={"label"} htmlFor={"bar-number-slider"}>Animation Speed</Text>
-              <Slider height={10} colorScheme="teal" aria-label="bar-number-slider" defaultValue={animationSpeed} min={15} max={1500} onChange={number => setState({ ...state, animationSpeed: number })}>
+              <Slider height={10} isDisabled={isAnimationRunning} colorScheme="teal" aria-label="bar-number-slider" defaultValue={animationSpeed} min={15} max={1500} onChange={number => setState({ ...state, animationSpeed: number })}>
                 <SliderTrack>
                   <SliderFilledTrack />
                 </SliderTrack>
