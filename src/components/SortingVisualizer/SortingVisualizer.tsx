@@ -10,7 +10,7 @@ import { Button, ButtonGroup } from "@chakra-ui/react"
 import { getMergeSortAnimations } from '../../sortingAlgorithms/sortingAlgorithms';
 
 //Height of Single Bar
-const BAR_HEIGHT = 530;
+const BAR_HEIGHT = 340;
 
 // This is the main color of the array bars.
 const PRIMARY_COLOR = 'hotpink';
@@ -23,14 +23,12 @@ function randomIntFromInterval(min: number, max: number) {
 }
 
 
-function initializeState() {
-  const numberOfBars = 50
-  const barWidth = "3"
-  const animationSpeed = 15
-  const array = [];
+function initializeState({ numberOfBars = 50, barWidth = "3", animationSpeed = 15, array = [] }: { numberOfBars?: number, barWidth?: string, animationSpeed?: number, array?: Array<number> }) {
+
   for (let i = 0; i < numberOfBars; i++) {
     array.push(randomIntFromInterval(5, BAR_HEIGHT));
   }
+
   return {
     numberOfBars,
     array,
@@ -42,7 +40,7 @@ function initializeState() {
 
 const SortingVisualizer = () => {
 
-  const [state, setState] = useState(initializeState)
+  const [state, setState] = useState(() => initializeState({}))
   const { numberOfBars, array, barWidth, animationSpeed } = state
 
   const arrayBarRefs = useRef<HTMLDivElement[]>([]);
@@ -53,19 +51,25 @@ const SortingVisualizer = () => {
   // }, [])
   // const originalArray = useRef(setRef)
 
+  const numberOfBarsRef = useRef(numberOfBars)
 
   const resetArray = () => {
-    const { array } = initializeState()
+    const { array } = initializeState({ numberOfBars })
     setState({ ...state, array });
   }
 
 
   useEffect(() => {
 
-    if (state.array.length !== 0) return
-    const { array } = initializeState()
-    setState({ ...state, array });
-  }, [state])
+    console.log("Current: ", numberOfBars)
+    console.log("PREV: ", numberOfBarsRef.current)
+    console.log(state)
+    if (numberOfBars !== numberOfBarsRef.current) {
+      const { array } = initializeState({ numberOfBars })
+      setState({ ...state, array });
+      numberOfBarsRef.current = numberOfBars
+    }
+  }, [state, numberOfBars])
 
 
   // function test() {
@@ -152,13 +156,13 @@ const SortingVisualizer = () => {
         <Flex direction={'column'} paddingTop={"2rem"} paddingBottom={"3rem"}>
           <ButtonGroup display={"flex"} flexWrap={"wrap"} width={"100%"} paddingBottom={"0.5rem"}>
             <Button colorScheme="yellow" onClick={resetArray}>Generate New Array</Button>
-            <Button colorScheme="teal" style={{ marginLeft: "auto" }} onClick={mergeSort}>Merge Sort</Button>
+            <Button colorScheme="teal" variant={"outline"} style={{ marginLeft: "auto" }} onClick={mergeSort}>Merge Sort</Button>
             {/* <Button colorScheme="teal" onClick={quickSort}>Quick Sort</Button>
             <Button colorScheme="teal" onClick={heapSort}>Heap Sort</Button>
             <Button colorScheme="teal" onClick={bubbleSort}>Bubble Sort</Button>
             <Button colorScheme="teal" onClick={test}>Test</Button> */}
           </ButtonGroup>
-          <ButtonGroup paddingTop={"0.5rem"}>
+          <ButtonGroup spacing={4} paddingTop={"0.5rem"}>
             <Flex width={"100%"} direction={"column"}>
               <Text as={"label"} htmlFor={"bar-width-select"}>Bar Width</Text>
               <Select height={10} placeholder="Select Bar Width" aria-label="bar-width-select" name={"bar-width-select"} onChange={event => setState({ ...state, barWidth: event.target.value })}>
@@ -167,14 +171,6 @@ const SortingVisualizer = () => {
                 <option value={"4"}>Medium</option>
                 <option value={"5"}>Large</option>
               </Select>
-              {/* <Slider colorScheme="teal" aria-label="bar-width-slider" name={"bar-width-slider"} defaultValue={barWidth} min={2} max={5} onChange={width => setState({ ...state, barWidth: width })}>
-                <SliderTrack>
-                  <SliderFilledTrack />
-                </SliderTrack>
-                <SliderThumb boxSize={6}>
-                  <Box color="tomato" />
-                </SliderThumb>
-              </Slider> */}
             </Flex>
             <Spacer />
             <Flex width={"100%"} direction={"column"}>
