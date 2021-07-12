@@ -44,56 +44,49 @@ const SortingVisualizer = () => {
   const { numberOfBars, array, barWidth, animationSpeed } = state
 
   const arrayBarRefs = useRef<HTMLDivElement[]>([]);
-
-
-  // const setRef = useMemo(() => {
-  //   return array
-  // }, [])
-  // const originalArray = useRef(setRef)
-
   const numberOfBarsRef = useRef(numberOfBars)
+  const isAnimationRunningRef = useRef(false)
+  const originalArrayRef = useRef([...array])
 
-  const resetArray = () => {
+
+  function resetArray() {
     const { array } = initializeState({ numberOfBars })
     setState({ ...state, array });
+    originalArrayRef.current = [...array]
+    numberOfBarsRef.current = numberOfBars
   }
 
 
   useEffect(() => {
-
-    console.log("Current: ", numberOfBars)
-    console.log("PREV: ", numberOfBarsRef.current)
-    console.log(state)
     if (numberOfBars !== numberOfBarsRef.current) {
       const { array } = initializeState({ numberOfBars })
       setState({ ...state, array });
+      originalArrayRef.current = [...array]
       numberOfBarsRef.current = numberOfBars
     }
   }, [state, numberOfBars])
 
 
-  // function test() {
-  //   const currArray = array
-  //   const orArray = originalArray.current
-  //   console.log({ orArray })
-  //   console.log({ currArray })
+  function test() {
+    const originalArray = originalArrayRef.current
+    const sortedArray = array
+    console.log("Original Array: ", originalArray)
+    console.log("Sorted Array: ", sortedArray)
+    const result = originalArray.every(elem => sortedArray.includes(elem));
 
-  //   let filteredArray: Array<number> = []
-
-  //   const filterValues = (input: Array<number>, checkNumber: number) => {
-  //     if (input === []) return
-  //     const result = input.filter(value => value === checkNumber);
-  //     filteredArray = result
-  //     return filterValues(result)
-  //   }
-
-  //   if (filteredArray === []) {
-  //     console.log("💯 Check complete, all numbers present")
-  //   }
-  // }
+    if (result === true) {
+      console.log("💯 Check complete, all numbers present")
+    } else {
+      console.log("🔔 What is happening")
+    }
+  }
 
 
+  //TODO: Should be a promise
   function mergeSort() {
+
+    if (isAnimationRunningRef.current) return
+    isAnimationRunningRef.current = true
 
     const animations = getMergeSortAnimations(array);
     for (let i = 0; i < animations.length; i++) {
@@ -116,6 +109,9 @@ const SortingVisualizer = () => {
         }, i * animationSpeed);
       }
     }
+    setTimeout(() => {
+      isAnimationRunningRef.current = false
+    }, animations.length * animationSpeed)
   }
 
   // function quickSort() {
@@ -159,8 +155,8 @@ const SortingVisualizer = () => {
             <Button colorScheme="teal" variant={"outline"} style={{ marginLeft: "auto" }} onClick={mergeSort}>Merge Sort</Button>
             {/* <Button colorScheme="teal" onClick={quickSort}>Quick Sort</Button>
             <Button colorScheme="teal" onClick={heapSort}>Heap Sort</Button>
-            <Button colorScheme="teal" onClick={bubbleSort}>Bubble Sort</Button>
-            <Button colorScheme="teal" onClick={test}>Test</Button> */}
+            <Button colorScheme="teal" onClick={bubbleSort}>Bubble Sort</Button>*/}
+            {/* <Button colorScheme="teal" onClick={test}>Test</Button> */}
           </ButtonGroup>
           <ButtonGroup spacing={4} paddingTop={"0.5rem"}>
             <Flex width={"100%"} direction={"column"}>
