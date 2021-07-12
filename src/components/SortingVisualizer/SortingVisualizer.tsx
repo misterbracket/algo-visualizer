@@ -67,6 +67,7 @@ const SortingVisualizer = () => {
   }, [state, numberOfBars])
 
 
+  // eslint-disable-next-line
   function test() {
     const originalArray = originalArrayRef.current
     const sortedArray = array
