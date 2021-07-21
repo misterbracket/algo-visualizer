@@ -151,7 +151,7 @@ const SortingVisualizer = () => {
 
         <Flex direction={'column'} paddingTop={"2rem"} paddingBottom={"3rem"}>
           <ButtonGroup display={"flex"} flexWrap={"wrap"} width={"100%"} paddingBottom={"0.5rem"}>
-            <Button colorScheme="yellow" onClick={resetArray}>Generate New Array</Button>
+            <Button isDisabled={isAnimationRunning} colorScheme="yellow" onClick={resetArray}>Generate New Array</Button>
             <Button isDisabled={isAnimationRunning} colorScheme="teal" variant={"outline"} style={{ marginLeft: "auto" }} onClick={mergeSort}>Merge Sort</Button>
             {/* <Button colorScheme="teal" onClick={quickSort}>Quick Sort</Button>
             <Button colorScheme="teal" onClick={heapSort}>Heap Sort</Button>
