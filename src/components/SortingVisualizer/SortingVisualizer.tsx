@@ -23,7 +23,7 @@ function randomIntFromInterval(min: number, max: number) {
 }
 
 
-function initializeState({ numberOfBars = 50, barWidth = "3", animationSpeed = 15, array = [] }: { numberOfBars?: number, barWidth?: string, animationSpeed?: number, array?: Array<number> }) {
+function initializeState({ numberOfBars = 15, barWidth = "3", animationSpeed = 15, array = [] }: { numberOfBars?: number, barWidth?: string, animationSpeed?: number, array?: Array<number> }) {
 
   for (let i = 0; i < numberOfBars; i++) {
     array.push(randomIntFromInterval(5, BAR_HEIGHT));
@@ -46,7 +46,6 @@ const SortingVisualizer = () => {
 
   const arrayBarDivsRefs = useRef<HTMLDivElement[]>([]);
   const arrayRef = useRef(array);
-  const numberOfBarsRef = useRef(numberOfBars)
   const originalArrayRef = useRef([...array])
 
 
@@ -55,19 +54,15 @@ const SortingVisualizer = () => {
     setState({ ...state, array });
     originalArrayRef.current = [...array]
     arrayRef.current = [...array]
-    numberOfBarsRef.current = numberOfBars
   }
 
-
-  useEffect(() => {
-    if (numberOfBars !== numberOfBarsRef.current) {
-      const { array } = initializeState({ numberOfBars })
-      setState({ ...state, array });
-      originalArrayRef.current = [...array]
-      arrayRef.current = [...array]
-      numberOfBarsRef.current = numberOfBars
-    }
-  }, [state, numberOfBars])
+  function changeNumberOfBars(num: number) {
+    const { array } = initializeState({ numberOfBars: num })
+    const currState = state
+    setState({ ...currState, numberOfBars: num, array });
+    originalArrayRef.current = [...array]
+    arrayRef.current = [...array]
+  }
 
 
   // eslint-disable-next-line
@@ -126,8 +121,6 @@ const SortingVisualizer = () => {
   //   // We leave it as an exercise to the viewer of this code to implement this method.
   // }
 
-
-
   return (
     <>
       <Heading size="2xl" padding={"4rem"}>Sorting Visualizer</Heading>
@@ -171,7 +164,7 @@ const SortingVisualizer = () => {
             <Spacer />
             <Flex width={"100%"} direction={"column"}>
               <Text as={"label"} htmlFor={"bar-number-slider"}>Number of Bars</Text>
-              <Slider height={10} disabled={isAnimationRunning} colorScheme="teal" aria-label="bar-number-slider" defaultValue={numberOfBars} min={10} max={100} onChange={number => setState({ ...state, numberOfBars: number })}>
+              <Slider height={10} disabled={isAnimationRunning} colorScheme="teal" aria-label="bar-number-slider" defaultValue={numberOfBars} min={10} max={15} onChange={num => changeNumberOfBars(num)}>
                 <SliderTrack>
                   <SliderFilledTrack />
                 </SliderTrack>
