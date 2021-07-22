@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useRef } from 'react'
 import {
   Box, Flex, Spacer, Slider, Text,
   SliderTrack,
@@ -23,7 +23,7 @@ function randomIntFromInterval(min: number, max: number) {
 }
 
 
-function initializeState({ numberOfBars = 15, barWidth = "3", animationSpeed = 15, array = [] }: { numberOfBars?: number, barWidth?: string, animationSpeed?: number, array?: Array<number> }) {
+function initializeState({ numberOfBars = 50, barWidth = "3", animationSpeed = 15, array = [] }: { numberOfBars?: number, barWidth?: string, animationSpeed?: number, array?: Array<number> }) {
 
   for (let i = 0; i < numberOfBars; i++) {
     array.push(randomIntFromInterval(5, BAR_HEIGHT));
@@ -47,6 +47,7 @@ const SortingVisualizer = () => {
   const arrayBarDivsRefs = useRef<HTMLDivElement[]>([]);
   const arrayRef = useRef(array);
   const originalArrayRef = useRef([...array])
+
 
 
   function resetArray() {
@@ -82,7 +83,12 @@ const SortingVisualizer = () => {
 
   //TODO: Should be a promise
   function mergeSort() {
-    const animations = getMergeSortAnimations(array);
+
+    const currArray = state.array
+    arrayRef.current = [...array]
+
+    const animations = getMergeSortAnimations(currArray);
+
     for (let i = 0; i < animations.length; i++) {
       const arrayBars = arrayBarDivsRefs.current
       const isColorChange = i % 3 !== 2;
@@ -103,6 +109,7 @@ const SortingVisualizer = () => {
         }, i * animationSpeed);
       }
     }
+
     setIsAnimationRunning(true)
     setTimeout(() => {
       setIsAnimationRunning(false)
@@ -123,14 +130,13 @@ const SortingVisualizer = () => {
 
   return (
     <>
-      <Heading size="2xl" padding={"4rem"}>Sorting Visualizer</Heading>
+      <Heading size="3xl" padding={"4rem"}>Sorting Visualizer</Heading>
       <Flex width={"100%"} direction={"column"} >
         <Flex align={"flex-end"} justify={"space-around"} height={`${BAR_HEIGHT}px`} width={"100%"}>
           {arrayRef.current.map((value, idx) => (
             <div key={idx}>
               <Box
                 ref={(element) => { arrayBarDivsRefs.current[idx] = element! }}
-                className="array-bar"
                 style={{
                   backgroundColor: PRIMARY_COLOR,
                   height: `${value}px`,
@@ -164,7 +170,7 @@ const SortingVisualizer = () => {
             <Spacer />
             <Flex width={"100%"} direction={"column"}>
               <Text as={"label"} htmlFor={"bar-number-slider"}>Number of Bars</Text>
-              <Slider height={10} disabled={isAnimationRunning} colorScheme="teal" aria-label="bar-number-slider" defaultValue={numberOfBars} min={10} max={15} onChange={num => changeNumberOfBars(num)}>
+              <Slider height={10} disabled={isAnimationRunning} colorScheme="teal" aria-label="bar-number-slider" defaultValue={numberOfBars} min={10} max={100} onChange={num => changeNumberOfBars(num)}>
                 <SliderTrack>
                   <SliderFilledTrack />
                 </SliderTrack>
