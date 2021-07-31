@@ -3,7 +3,7 @@ import {
   Box, Flex, Spacer, Slider, Text,
   SliderTrack,
   SliderFilledTrack,
-  SliderThumb, Heading, Select
+  SliderThumb, Heading, Select, Grid
 } from "@chakra-ui/react"
 
 import { Button, ButtonGroup } from "@chakra-ui/react"
@@ -23,7 +23,7 @@ function randomIntFromInterval(min: number, max: number) {
 }
 
 
-function initializeState({ numberOfBars = 30, barWidth = 3, animationSpeed = 15, array = [] }: { numberOfBars?: number, barWidth?: number, animationSpeed?: number, array?: Array<number> }) {
+function initializeState({ numberOfBars = 15, barWidth = 1, animationSpeed = 15, array = [] }: { numberOfBars?: number, barWidth?: number, animationSpeed?: number, array?: Array<number> }) {
 
   for (let i = 0; i < numberOfBars; i++) {
     array.push(randomIntFromInterval(5, BAR_HEIGHT));
@@ -135,9 +135,7 @@ const SortingVisualizer = () => {
     for (let i = 0; i < animatonsArray.length; i++) {
       const arrayBars = arrayBarDivsRefs.current
       const isColorChange = i % 3 !== 2;
-      console.log(animatonsArray[i])
       if (isColorChange) {
-        console.log("CHANGING COLOR")
         const [barOneIdx, barTwoIdx] = animatonsArray[i];
         const barOneStyle = arrayBars[barOneIdx as number].style;
         const barTwoStyle = arrayBars[barTwoIdx as number].style;
@@ -147,7 +145,6 @@ const SortingVisualizer = () => {
           barTwoStyle.backgroundColor = color;
         }, i * animationSpeed);
       } else {
-        console.log("CHANGING HEIGHT")
         setTimeout(() => {
           const [barOne, barTwo] = animatonsArray[i];
           const [barOneIdx, newBarOneHeight] = barOne as [number, number]
@@ -165,28 +162,23 @@ const SortingVisualizer = () => {
       setIsAnimationRunning(false)
     }, animatonsArray.length * animationSpeed)
   }
-
+  console.log(barWidth)
   return (
     <>
       <Heading size="3xl" padding={"4rem"}>Sorting Visualizer</Heading>
       <Flex width={"100%"} direction={"column"} >
-        <Flex align={"flex-end"} justify={"space-around"} height={`${BAR_HEIGHT}px`} width={"100%"} overflowX={"auto"}>
+        <Grid templateColumns="repeat(auto-fit, 30px)" autoFlow='column' style={{ justifyContent: "center" }} alignItems="end" height={`${BAR_HEIGHT + 20}px`} overflowX="auto">
           {arrayRef.current.map((value, idx) => (
-            <div key={idx}>
+            <Box key={idx} >
               <Box
                 ref={(element) => { arrayBarDivsRefs.current[idx] = element! }}
-                marginLeft={3}
-                style={{
-                  backgroundColor: PRIMARY_COLOR,
-                  height: `${value}px`,
-                  width: `${barWidth * 10}px`,
-                  display: "inline-block",
-                }}
+                background={PRIMARY_COLOR}
+                h={`${value}px`}
+                w={`${barWidth * 10}px`}
               ></Box>
-              <div>{value}</div>
-            </div>
+            </Box>
           ))}
-        </Flex>
+        </Grid>
 
         <Flex direction={'column'} paddingTop={"2rem"} paddingBottom={"3rem"}>
           <ButtonGroup display={"flex"} flexWrap={"wrap"} width={"100%"} paddingBottom={"0.5rem"}>
@@ -200,17 +192,17 @@ const SortingVisualizer = () => {
           <ButtonGroup spacing={4} paddingTop={"0.5rem"}>
             <Flex width={"100%"} direction={"column"}>
               <Text as={"label"} htmlFor={"bar-width-select"}>Bar Width</Text>
-              <Select height={10} placeholder="Select Bar Width" aria-label="bar-width-select" name={"bar-width-select"} onChange={event => setState({ ...state, barWidth: parseInt(event.target.value) })}>
-                <option value={2}>Extra Thin</option>
-                <option value={3}>Thin</option>
-                <option value={4}>Medium</option>
-                <option value={5}>Large</option>
+              <Select height={10} placeholder="Select Bar Width" aria-label="bar-width-select" name={"bar-width-select"} onChange={event => setState({ ...state, barWidth: parseFloat(event.target.value) })}>
+                <option value={0.5}>Extra Thin</option>
+                <option value={1}>Thin</option>
+                <option value={1.5}>Medium</option>
+                <option value={2.5}>Large</option>
               </Select>
             </Flex>
             <Spacer />
             <Flex width={"100%"} direction={"column"}>
               <Text as={"label"} htmlFor={"bar-number-slider"}>Number of Bars</Text>
-              <Slider height={10} disabled={isAnimationRunning} colorScheme="teal" aria-label="bar-number-slider" defaultValue={numberOfBars} min={10} max={50} onChange={num => changeNumberOfBars(num)}>
+              <Slider height={10} disabled={isAnimationRunning} colorScheme="teal" aria-label="bar-number-slider" defaultValue={numberOfBars} min={10} max={30} onChange={num => changeNumberOfBars(num)}>
                 <SliderTrack>
                   <SliderFilledTrack />
                 </SliderTrack>
