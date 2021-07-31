@@ -23,7 +23,7 @@ function randomIntFromInterval(min: number, max: number) {
 }
 
 
-function initializeState({ numberOfBars = 50, barWidth = "3", animationSpeed = 15, array = [] }: { numberOfBars?: number, barWidth?: string, animationSpeed?: number, array?: Array<number> }) {
+function initializeState({ numberOfBars = 30, barWidth = 3, animationSpeed = 15, array = [] }: { numberOfBars?: number, barWidth?: number, animationSpeed?: number, array?: Array<number> }) {
 
   for (let i = 0; i < numberOfBars; i++) {
     array.push(randomIntFromInterval(5, BAR_HEIGHT));
@@ -44,6 +44,7 @@ const SortingVisualizer = () => {
   const [isAnimationRunning, setIsAnimationRunning] = useState(false)
   const { numberOfBars, array, barWidth, animationSpeed } = state
 
+  console.log("REDENDER 1: ", numberOfBars)
   const arrayBarDivsRefs = useRef<HTMLDivElement[]>([]);
   const arrayRef = useRef(array);
   const originalArrayRef = useRef([...array])
@@ -58,9 +59,11 @@ const SortingVisualizer = () => {
   }
 
   function changeNumberOfBars(num: number) {
-    const { array } = initializeState({ numberOfBars: num })
-    const currState = state
-    setState({ ...currState, numberOfBars: num, array });
+    const newState = initializeState({ numberOfBars: num })
+    console.log(array)
+    console.log(num)
+    setState(newState);
+    console.log("RENDER2:", state)
     originalArrayRef.current = [...array]
     arrayRef.current = [...array]
   }
@@ -167,15 +170,16 @@ const SortingVisualizer = () => {
     <>
       <Heading size="3xl" padding={"4rem"}>Sorting Visualizer</Heading>
       <Flex width={"100%"} direction={"column"} >
-        <Flex align={"flex-end"} justify={"space-around"} height={`${BAR_HEIGHT}px`} width={"100%"}>
+        <Flex align={"flex-end"} justify={"space-around"} height={`${BAR_HEIGHT}px`} width={"100%"} overflowX={"auto"}>
           {arrayRef.current.map((value, idx) => (
             <div key={idx}>
               <Box
                 ref={(element) => { arrayBarDivsRefs.current[idx] = element! }}
+                marginLeft={3}
                 style={{
                   backgroundColor: PRIMARY_COLOR,
                   height: `${value}px`,
-                  width: `${barWidth}px`,
+                  width: `${barWidth * 10}px`,
                   display: "inline-block",
                 }}
               ></Box>
@@ -196,17 +200,17 @@ const SortingVisualizer = () => {
           <ButtonGroup spacing={4} paddingTop={"0.5rem"}>
             <Flex width={"100%"} direction={"column"}>
               <Text as={"label"} htmlFor={"bar-width-select"}>Bar Width</Text>
-              <Select height={10} placeholder="Select Bar Width" aria-label="bar-width-select" name={"bar-width-select"} onChange={event => setState({ ...state, barWidth: event.target.value })}>
-                <option value={"2"}>Extra Thin</option>
-                <option value={"3"}>Thin</option>
-                <option value={"4"}>Medium</option>
-                <option value={"5"}>Large</option>
+              <Select height={10} placeholder="Select Bar Width" aria-label="bar-width-select" name={"bar-width-select"} onChange={event => setState({ ...state, barWidth: parseInt(event.target.value) })}>
+                <option value={2}>Extra Thin</option>
+                <option value={3}>Thin</option>
+                <option value={4}>Medium</option>
+                <option value={5}>Large</option>
               </Select>
             </Flex>
             <Spacer />
             <Flex width={"100%"} direction={"column"}>
               <Text as={"label"} htmlFor={"bar-number-slider"}>Number of Bars</Text>
-              <Slider height={10} disabled={isAnimationRunning} colorScheme="teal" aria-label="bar-number-slider" defaultValue={10} min={10} max={100} onChange={num => changeNumberOfBars(num)}>
+              <Slider height={10} disabled={isAnimationRunning} colorScheme="teal" aria-label="bar-number-slider" defaultValue={numberOfBars} min={10} max={50} onChange={num => changeNumberOfBars(num)}>
                 <SliderTrack>
                   <SliderFilledTrack />
                 </SliderTrack>
