@@ -28,7 +28,7 @@ function initializeState({ numberOfBars = 50, barWidth = "3", animationSpeed = 1
   for (let i = 0; i < numberOfBars; i++) {
     array.push(randomIntFromInterval(5, BAR_HEIGHT));
   }
-  array = [20, 180, 200, 80, 140, 120, 60, 100, 40, 160]
+  // array = [20, 180, 200, 80, 140, 120, 60, 100, 40, 160]
   return {
     numberOfBars,
     array,
@@ -90,7 +90,6 @@ const SortingVisualizer = () => {
     for (let i = 0; i < animations.length; i++) {
       const arrayBars = arrayBarDivsRefs.current
       const isColorChange = i % 3 !== 2;
-      console.log(isColorChange)
       if (isColorChange) {
         const [barOneIdx, barTwoIdx] = animations[i];
         const barOneStyle = arrayBars[barOneIdx].style;
@@ -130,34 +129,16 @@ const SortingVisualizer = () => {
 
     const animatonsArray = getBubbleSortAnimations(currArray);
     console.log(animatonsArray)
-    let currentIdx = 1
     for (let i = 0; i < animatonsArray.length; i++) {
       const arrayBars = arrayBarDivsRefs.current
-      let isColorChange = false
-      if (currentIdx === 1) {
-        isColorChange = true
-        currentIdx = 2
-        console.log(currentIdx)
-      } else if (currentIdx === 2) {
-        isColorChange = true
-        currentIdx = 3
-        console.log(currentIdx)
-      } else if (currentIdx === 3) {
-        isColorChange = false
-        currentIdx = 4
-        console.log(currentIdx)
-      } else if (currentIdx === 4) {
-        isColorChange = false
-        currentIdx = 1
-        console.log(currentIdx)
-      }
+      const isColorChange = i % 3 !== 2;
       console.log(animatonsArray[i])
       if (isColorChange) {
         console.log("CHANGING COLOR")
         const [barOneIdx, barTwoIdx] = animatonsArray[i];
-        const barOneStyle = arrayBars[barOneIdx].style;
-        const barTwoStyle = arrayBars[barTwoIdx].style;
-        const color = currentIdx === 2 ? SECONDARY_COLOR : PRIMARY_COLOR;
+        const barOneStyle = arrayBars[barOneIdx as number].style;
+        const barTwoStyle = arrayBars[barTwoIdx as number].style;
+        const color = i % 3 === 0 ? SECONDARY_COLOR : PRIMARY_COLOR;
         setTimeout(() => {
           barOneStyle.backgroundColor = color;
           barTwoStyle.backgroundColor = color;
@@ -165,9 +146,13 @@ const SortingVisualizer = () => {
       } else {
         console.log("CHANGING HEIGHT")
         setTimeout(() => {
-          const [barOneIdx, newHeight] = animatonsArray[i];
+          const [barOne, barTwo] = animatonsArray[i];
+          const [barOneIdx, newBarOneHeight] = barOne as [number, number]
+          const [barTwoIdx, newBarTwoHeight] = barTwo as [number, number]
           const barOneStyle = arrayBars[barOneIdx].style;
-          barOneStyle.height = `${newHeight}px`;
+          const barTwoStyle = arrayBars[barTwoIdx].style;
+          barOneStyle.height = `${newBarOneHeight}px`;
+          barTwoStyle.height = `${newBarTwoHeight}px`;
         }, i * animationSpeed);
       }
     }
@@ -205,7 +190,7 @@ const SortingVisualizer = () => {
             <Button isDisabled={isAnimationRunning} colorScheme="teal" variant={"outline"} style={{ marginLeft: "auto" }} onClick={mergeSort}>Merge Sort</Button>
             {/* <Button colorScheme="teal" onClick={quickSort}>Quick Sort</Button>
             <Button colorScheme="teal" onClick={heapSort}>Heap Sort</Button>*/}
-            <Button colorScheme="teal" onClick={bubbleSort}>Bubble Sort</Button>
+            <Button isDisabled={isAnimationRunning} colorScheme="teal" variant={"outline"} onClick={bubbleSort}>Bubble Sort</Button>
             {/* <Button colorScheme="teal" onClick={test}>Test</Button> */}
           </ButtonGroup>
           <ButtonGroup spacing={4} paddingTop={"0.5rem"}>

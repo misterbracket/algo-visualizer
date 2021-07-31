@@ -85,7 +85,7 @@ export function getBubbleSortAnimations(array: Array<number>) {
 
 function bubbleSortHelper(
   array: Array<number>,
-  animations: Array<Array<number>>
+  animations: Array<Array<number | Array<number>>>
 ) {
   let isSorted = false;
   let counter = 0;
@@ -97,13 +97,17 @@ function bubbleSortHelper(
       const heightOne = array[i];
       const heightTwo = array[i + 1];
       if (array[i] > array[i + 1]) {
-        animations.push([i, array[i + 1]]);
-        animations.push([i + 1, array[i]]);
+        animations.push([
+          [i, array[i + 1]],
+          [i + 1, array[i]],
+        ]);
         swap<number>(i, i + 1, array);
         isSorted = false;
       } else {
-        animations.push([i, heightOne]);
-        animations.push([i + 1, heightTwo]);
+        animations.push([
+          [i, heightOne],
+          [i + 1, heightTwo],
+        ]);
       }
     }
     counter++;
