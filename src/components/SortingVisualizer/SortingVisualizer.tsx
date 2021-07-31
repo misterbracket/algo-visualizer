@@ -7,7 +7,7 @@ import {
 } from "@chakra-ui/react"
 
 import { Button, ButtonGroup } from "@chakra-ui/react"
-import { getMergeSortAnimations } from '../../sortingAlgorithms/sortingAlgorithms';
+import { getMergeSortAnimations, getBubbleSortAnimations } from '../../sortingAlgorithms/sortingAlgorithms';
 
 //Height of Single Bar
 const BAR_HEIGHT = 340;
@@ -28,7 +28,7 @@ function initializeState({ numberOfBars = 50, barWidth = "3", animationSpeed = 1
   for (let i = 0; i < numberOfBars; i++) {
     array.push(randomIntFromInterval(5, BAR_HEIGHT));
   }
-
+  array = [20, 180, 200, 80, 140, 120, 60, 100, 40, 160]
   return {
     numberOfBars,
     array,
@@ -86,12 +86,11 @@ const SortingVisualizer = () => {
 
     const currArray = state.array
     arrayRef.current = [...array]
-
     const animations = getMergeSortAnimations(currArray);
-
     for (let i = 0; i < animations.length; i++) {
       const arrayBars = arrayBarDivsRefs.current
       const isColorChange = i % 3 !== 2;
+      console.log(isColorChange)
       if (isColorChange) {
         const [barOneIdx, barTwoIdx] = animations[i];
         const barOneStyle = arrayBars[barOneIdx].style;
@@ -124,9 +123,60 @@ const SortingVisualizer = () => {
   //   // We leave it as an exercise to the viewer of this code to implement this method.
   // }
 
-  // function bubbleSort() {
-  //   // We leave it as an exercise to the viewer of this code to implement this method.
-  // }
+  function bubbleSort() {
+
+    const currArray = state.array
+    arrayRef.current = [...array]
+
+    const animatonsArray = getBubbleSortAnimations(currArray);
+    console.log(animatonsArray)
+    let currentIdx = 1
+    for (let i = 0; i < animatonsArray.length; i++) {
+      const arrayBars = arrayBarDivsRefs.current
+      let isColorChange = false
+      if (currentIdx === 1) {
+        isColorChange = true
+        currentIdx = 2
+        console.log(currentIdx)
+      } else if (currentIdx === 2) {
+        isColorChange = true
+        currentIdx = 3
+        console.log(currentIdx)
+      } else if (currentIdx === 3) {
+        isColorChange = false
+        currentIdx = 4
+        console.log(currentIdx)
+      } else if (currentIdx === 4) {
+        isColorChange = false
+        currentIdx = 1
+        console.log(currentIdx)
+      }
+      console.log(animatonsArray[i])
+      if (isColorChange) {
+        console.log("CHANGING COLOR")
+        const [barOneIdx, barTwoIdx] = animatonsArray[i];
+        const barOneStyle = arrayBars[barOneIdx].style;
+        const barTwoStyle = arrayBars[barTwoIdx].style;
+        const color = currentIdx === 2 ? SECONDARY_COLOR : PRIMARY_COLOR;
+        setTimeout(() => {
+          barOneStyle.backgroundColor = color;
+          barTwoStyle.backgroundColor = color;
+        }, i * animationSpeed);
+      } else {
+        console.log("CHANGING HEIGHT")
+        setTimeout(() => {
+          const [barOneIdx, newHeight] = animatonsArray[i];
+          const barOneStyle = arrayBars[barOneIdx].style;
+          barOneStyle.height = `${newHeight}px`;
+        }, i * animationSpeed);
+      }
+    }
+
+    setIsAnimationRunning(true)
+    setTimeout(() => {
+      setIsAnimationRunning(false)
+    }, animatonsArray.length * animationSpeed)
+  }
 
   return (
     <>
@@ -144,6 +194,7 @@ const SortingVisualizer = () => {
                   display: "inline-block",
                 }}
               ></Box>
+              <div>{value}</div>
             </div>
           ))}
         </Flex>
@@ -153,8 +204,8 @@ const SortingVisualizer = () => {
             <Button isDisabled={isAnimationRunning} colorScheme="yellow" onClick={resetArray}>Generate New Array</Button>
             <Button isDisabled={isAnimationRunning} colorScheme="teal" variant={"outline"} style={{ marginLeft: "auto" }} onClick={mergeSort}>Merge Sort</Button>
             {/* <Button colorScheme="teal" onClick={quickSort}>Quick Sort</Button>
-            <Button colorScheme="teal" onClick={heapSort}>Heap Sort</Button>
-            <Button colorScheme="teal" onClick={bubbleSort}>Bubble Sort</Button>*/}
+            <Button colorScheme="teal" onClick={heapSort}>Heap Sort</Button>*/}
+            <Button colorScheme="teal" onClick={bubbleSort}>Bubble Sort</Button>
             {/* <Button colorScheme="teal" onClick={test}>Test</Button> */}
           </ButtonGroup>
           <ButtonGroup spacing={4} paddingTop={"0.5rem"}>
@@ -170,7 +221,7 @@ const SortingVisualizer = () => {
             <Spacer />
             <Flex width={"100%"} direction={"column"}>
               <Text as={"label"} htmlFor={"bar-number-slider"}>Number of Bars</Text>
-              <Slider height={10} disabled={isAnimationRunning} colorScheme="teal" aria-label="bar-number-slider" defaultValue={numberOfBars} min={10} max={100} onChange={num => changeNumberOfBars(num)}>
+              <Slider height={10} disabled={isAnimationRunning} colorScheme="teal" aria-label="bar-number-slider" defaultValue={10} min={10} max={100} onChange={num => changeNumberOfBars(num)}>
                 <SliderTrack>
                   <SliderFilledTrack />
                 </SliderTrack>
