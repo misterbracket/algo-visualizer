@@ -23,73 +23,42 @@ function randomIntFromInterval(min: number, max: number) {
 }
 
 
-function initializeState({ numberOfBars = 15, barWidth = 1, animationSpeed = 15, array = [] }: { numberOfBars?: number, barWidth?: number, animationSpeed?: number, array?: Array<number> }) {
-
+function initializeArray(numberOfBars = 15) {
+  const array = []
   for (let i = 0; i < numberOfBars; i++) {
     array.push(randomIntFromInterval(5, BAR_HEIGHT));
   }
-  // array = [20, 180, 200, 80, 140, 120, 60, 100, 40, 160]
-  return {
-    numberOfBars,
-    array,
-    barWidth,
-    animationSpeed
-  }
+  return array
 }
 
 
 const SortingVisualizer = () => {
 
-  const [state, setState] = useState(() => initializeState({}))
+  const [barWidth, setBarWidth] = useState(1)
+  const [animationSpeed, setAnimationSpeed] = useState(15)
+  const [numberOfBars, setNumberOfBars] = useState(15)
+  const [array, setArray] = useState(() => initializeArray(numberOfBars))
   const [isAnimationRunning, setIsAnimationRunning] = useState(false)
-  const { numberOfBars, array, barWidth, animationSpeed } = state
 
-  console.log("REDENDER 1: ", numberOfBars)
   const arrayBarDivsRefs = useRef<HTMLDivElement[]>([]);
   const arrayRef = useRef(array);
-  const originalArrayRef = useRef([...array])
-
+  arrayRef.current = [...array]
 
 
   function resetArray() {
-    const { array } = initializeState({ numberOfBars })
-    setState({ ...state, array });
-    originalArrayRef.current = [...array]
-    arrayRef.current = [...array]
+    const newArray = initializeArray(numberOfBars)
+    setArray(newArray);
   }
 
   function changeNumberOfBars(num: number) {
-    const newState = initializeState({ numberOfBars: num })
-    console.log(array)
-    console.log(num)
-    setState(newState);
-    console.log("RENDER2:", state)
-    originalArrayRef.current = [...array]
-    arrayRef.current = [...array]
+    const newArray = initializeArray(num)
+    setArray(newArray);
+    setNumberOfBars(num)
   }
 
-
-  // eslint-disable-next-line
-  function test() {
-    const originalArray = originalArrayRef.current
-    const sortedArray = array
-    console.log("Original Array: ", originalArray)
-    console.log("Sorted Array: ", sortedArray)
-    const result = originalArray.every(elem => sortedArray.includes(elem));
-
-    if (result === true) {
-      console.log("💯 Check complete, all numbers present")
-    } else {
-      console.log("🔔 What is happening")
-    }
-  }
-
-  //TODO: Should be a promise
+  console.log(array)
   function mergeSort() {
-
-    const currArray = state.array
-    arrayRef.current = [...array]
-    const animations = getMergeSortAnimations(currArray);
+    const animations = getMergeSortAnimations([...array]);
     for (let i = 0; i < animations.length; i++) {
       const arrayBars = arrayBarDivsRefs.current
       const isColorChange = i % 3 !== 2;
@@ -126,11 +95,7 @@ const SortingVisualizer = () => {
   // }
 
   function bubbleSort() {
-
-    const currArray = state.array
-    arrayRef.current = [...array]
-
-    const animatonsArray = getBubbleSortAnimations(currArray);
+    const animatonsArray = getBubbleSortAnimations([...array]);
     console.log(animatonsArray)
     for (let i = 0; i < animatonsArray.length; i++) {
       const arrayBars = arrayBarDivsRefs.current
@@ -162,7 +127,7 @@ const SortingVisualizer = () => {
       setIsAnimationRunning(false)
     }, animatonsArray.length * animationSpeed)
   }
-  console.log(barWidth)
+
   return (
     <>
       <Heading size="3xl" padding={"4rem"}>Sorting Visualizer</Heading>
@@ -192,7 +157,7 @@ const SortingVisualizer = () => {
           <ButtonGroup spacing={4} paddingTop={"0.5rem"}>
             <Flex width={"100%"} direction={"column"}>
               <Text as={"label"} htmlFor={"bar-width-select"}>Bar Width</Text>
-              <Select height={10} placeholder="Select Bar Width" aria-label="bar-width-select" name={"bar-width-select"} onChange={event => setState({ ...state, barWidth: parseFloat(event.target.value) })}>
+              <Select height={10} placeholder="Select Bar Width" aria-label="bar-width-select" name={"bar-width-select"} onChange={event => setBarWidth(parseFloat(event.target.value))}>
                 <option value={0.5}>Extra Thin</option>
                 <option value={1}>Thin</option>
                 <option value={1.5}>Medium</option>
@@ -214,7 +179,7 @@ const SortingVisualizer = () => {
             <Spacer />
             <Flex width={"100%"} direction={"column"}>
               <Text as={"label"} htmlFor={"bar-number-slider"}>Animation Speed</Text>
-              <Slider height={10} isDisabled={isAnimationRunning} colorScheme="teal" aria-label="bar-number-slider" defaultValue={animationSpeed} min={15} max={1500} onChange={number => setState({ ...state, animationSpeed: number })}>
+              <Slider height={10} isDisabled={isAnimationRunning} colorScheme="teal" aria-label="bar-number-slider" defaultValue={animationSpeed} min={15} max={1500} onChange={number => setAnimationSpeed(number)}>
                 <SliderTrack>
                   <SliderFilledTrack />
                 </SliderTrack>
