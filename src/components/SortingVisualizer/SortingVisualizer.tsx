@@ -3,7 +3,7 @@ import {
   Box, Flex, Spacer, Slider, Text,
   SliderTrack,
   SliderFilledTrack,
-  SliderThumb, Heading, Select, Grid, Stack, Container, HStack
+  SliderThumb, Heading, Select, Stack, HStack
 } from "@chakra-ui/react"
 
 import { Button, ButtonGroup } from "@chakra-ui/react"
