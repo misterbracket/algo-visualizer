@@ -153,7 +153,7 @@ const SortingVisualizer = () => {
 
   return (
     <>
-      <Heading size="3xl" padding={"4rem"}>Sorting Visualizer</Heading>
+      <Heading size="2xl" padding={"4rem"}>Sorting Visualizer</Heading>
       <Flex width={"100%"} direction={"column"} >
         <Grid templateColumns="repeat(auto-fit, 30px)" autoFlow='column' style={{ justifyContent: "center" }} alignItems="end" height={`${BAR_HEIGHT + 20}px`} overflowX="auto">
           {array.map((value, idx) => (<Box key={value} >
