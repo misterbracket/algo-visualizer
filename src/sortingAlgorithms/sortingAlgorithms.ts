@@ -3,7 +3,6 @@ export function getMergeSortAnimations(array: Array<number>) {
   if (array.length <= 1) return array;
   const auxiliaryArray = array.slice();
   mergeSortHelper(array, 0, array.length - 1, auxiliaryArray, animations);
-  console.log(animations);
   return animations;
 }
 
@@ -111,6 +110,39 @@ function bubbleSortHelper(
       }
     }
     counter++;
+  }
+  return animations;
+}
+
+export function getInsetionSortAnimations(array: Array<number>) {
+  const animations: Array<Array<number>> = [];
+  const animatonsArray = insertionSortHelper(array, animations);
+  return animatonsArray;
+}
+
+function insertionSortHelper(
+  array: Array<number>,
+  animations: Array<Array<number | Array<number>>>
+) {
+  for (let i = 1; i < array.length; i++) {
+    for (let j = i; j > 0; j--) {
+      animations.push([j, j - 1]);
+      animations.push([j, j - 1]);
+      const heightOne = array[j];
+      const heightTwo = array[j - 1];
+      if (array[j] < array[j - 1]) {
+        animations.push([
+          [j - 1, array[j]],
+          [j, array[j - 1]],
+        ]);
+        swap(j, j - 1, array);
+      } else {
+        animations.push([
+          [j, heightOne],
+          [j - 1, heightTwo],
+        ]);
+      }
+    }
   }
   return animations;
 }
