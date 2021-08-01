@@ -3,7 +3,7 @@ import {
   Box, Flex, Spacer, Slider, Text,
   SliderTrack,
   SliderFilledTrack,
-  SliderThumb, Heading, Select, Grid
+  SliderThumb, Heading, Select, Grid, Stack
 } from "@chakra-ui/react"
 
 import { Button, ButtonGroup } from "@chakra-ui/react"
@@ -169,15 +169,18 @@ const SortingVisualizer = () => {
         </Grid>
 
         <Flex direction={'column'} paddingTop={"2rem"} paddingBottom={"3rem"}>
-          <ButtonGroup display={"flex"} flexWrap={"wrap"} width={"100%"} paddingBottom={"0.5rem"}>
-            <Button isDisabled={isAnimationRunning} colorScheme="yellow" onClick={resetArray}>Generate New Array</Button>
-            <Button isDisabled={isAnimationRunning} colorScheme="teal" variant={"outline"} style={{ marginLeft: "auto" }} onClick={mergeSort}>Merge Sort</Button>
-            <Button isDisabled={isAnimationRunning} colorScheme="teal" variant={"outline"} onClick={() => insertionsAndBubbleSort("insertion")}>Insertion Sort</Button>
-            {/* <Button colorScheme="teal" onClick={quickSort}>Quick Sort</Button>
+          <Stack direction={["column", "row"]} justify="space-between" spacing={2}>
+            <Stack direction={["column", "row"]} spacing={2}>
+              <Button isLoading={isAnimationRunning} colorScheme="yellow" onClick={resetArray}>Generate New Array</Button>
+            </Stack>
+            <Stack direction={["column", "row"]} spacing={2}>
+              <Button isLoading={isAnimationRunning} colorScheme="teal" variant={"outline"} onClick={mergeSort}>Merge Sort</Button>
+              <Button isLoading={isAnimationRunning} colorScheme="teal" variant={"outline"} onClick={() => insertionsAndBubbleSort("insertion")}>Insertion Sort</Button>
+              {/* <Button colorScheme="teal" onClick={quickSort}>Quick Sort</Button>
             <Button colorScheme="teal" onClick={heapSort}>Heap Sort</Button>*/}
-            <Button isDisabled={isAnimationRunning} colorScheme="teal" variant={"outline"} onClick={() => insertionsAndBubbleSort("bubble")}>Bubble Sort</Button>
-            {/* <Button colorScheme="teal" onClick={test}>Test</Button> */}
-          </ButtonGroup>
+              <Button isLoading={isAnimationRunning} colorScheme="teal" variant={"outline"} onClick={() => insertionsAndBubbleSort("bubble")}>Bubble Sort</Button>
+            </Stack>
+          </Stack>
           <ButtonGroup spacing={4} paddingTop={"0.5rem"}>
             <Flex width={"100%"} direction={"column"}>
               <Text as={"label"} htmlFor={"bar-width-select"}>Bar Width</Text>
