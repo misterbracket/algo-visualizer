@@ -101,8 +101,19 @@ const SortingVisualizer = () => {
   //   // We leave it as an exercise to the viewer of this code to implement this method.
   // }
 
-  function bubbleSort() {
-    const animatonsArray = getBubbleSortAnimations([...array]);
+  function insertionsAndBubbleSort(algorithm: "bubble" | "insertion") {
+    let animatonsArray: Array<Array<number | Array<number>>>
+    switch (algorithm) {
+      case "bubble":
+        animatonsArray = getBubbleSortAnimations([...array])
+        break
+      case "insertion":
+        animatonsArray = getInsetionSortAnimations([...array])
+        break
+      default:
+        animatonsArray = getBubbleSortAnimations([...array])
+    }
+
     for (let i = 0; i < animatonsArray.length; i++) {
       const arrayBars = arrayBarDivsRefs.current
       const isColorChange = i % 3 !== 2;
@@ -129,38 +140,6 @@ const SortingVisualizer = () => {
     }
   }
 
-  function insertionSort() {
-    const animatonsArray = getInsetionSortAnimations([...array]);
-    for (let i = 0; i < animatonsArray.length; i++) {
-      const arrayBars = arrayBarDivsRefs.current
-      const isColorChange = i % 3 !== 2;
-      if (isColorChange) {
-        const [barOneIdx, barTwoIdx] = animatonsArray[i];
-        const barOneStyle = arrayBars[barOneIdx as number].style;
-        const barTwoStyle = arrayBars[barTwoIdx as number].style;
-        const color = i % 3 === 0 ? SECONDARY_COLOR : PRIMARY_COLOR;
-        setTimeout(() => {
-          barOneStyle.backgroundColor = color;
-          barTwoStyle.backgroundColor = color;
-        }, i * animationSpeed);
-      } else {
-        setTimeout(() => {
-          const [barOne, barTwo] = animatonsArray[i];
-          const [barOneIdx, newBarOneHeight] = barOne as [number, number]
-          const [barTwoIdx, newBarTwoHeight] = barTwo as [number, number]
-          const barOneStyle = arrayBars[barOneIdx].style;
-          const barTwoStyle = arrayBars[barTwoIdx].style;
-          barOneStyle.height = `${newBarOneHeight}px`;
-          barTwoStyle.height = `${newBarTwoHeight}px`;
-        }, i * animationSpeed);
-      }
-    }
-
-    setIsAnimationRunning(true)
-    setTimeout(() => {
-      setIsAnimationRunning(false)
-    }, animatonsArray.length * animationSpeed)
-  }
 
   return (
     <>
@@ -183,10 +162,10 @@ const SortingVisualizer = () => {
           <ButtonGroup display={"flex"} flexWrap={"wrap"} width={"100%"} paddingBottom={"0.5rem"}>
             <Button isDisabled={isAnimationRunning} colorScheme="yellow" onClick={resetArray}>Generate New Array</Button>
             <Button isDisabled={isAnimationRunning} colorScheme="teal" variant={"outline"} style={{ marginLeft: "auto" }} onClick={mergeSort}>Merge Sort</Button>
-            <Button isDisabled={isAnimationRunning} colorScheme="teal" variant={"outline"} onClick={insertionSort}>Insertion Sort</Button>
+            <Button isDisabled={isAnimationRunning} colorScheme="teal" variant={"outline"} onClick={() => insertionsAndBubbleSort("insertion")}>Insertion Sort</Button>
             {/* <Button colorScheme="teal" onClick={quickSort}>Quick Sort</Button>
             <Button colorScheme="teal" onClick={heapSort}>Heap Sort</Button>*/}
-            <Button isDisabled={isAnimationRunning} colorScheme="teal" variant={"outline"} onClick={bubbleSort}>Bubble Sort</Button>
+            <Button isDisabled={isAnimationRunning} colorScheme="teal" variant={"outline"} onClick={() => insertionsAndBubbleSort("bubble")}>Bubble Sort</Button>
             {/* <Button colorScheme="teal" onClick={test}>Test</Button> */}
           </ButtonGroup>
           <ButtonGroup spacing={4} paddingTop={"0.5rem"}>
