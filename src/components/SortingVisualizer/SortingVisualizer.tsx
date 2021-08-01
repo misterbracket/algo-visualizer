@@ -155,7 +155,7 @@ const SortingVisualizer = () => {
     <>
       <Heading size="2xl" padding={"4rem"}>Sorting Visualizer</Heading>
       <Flex width={"100%"} direction={"column"} >
-        <HStack justify="center" align="end" spacing="5px" overflowX="auto">
+        <HStack justify="center" align="flex-end" spacing="5px" overflowX="auto">
           {array.map((value, idx) => (<Box key={value} >
             <Box
               ref={(element) => { arrayBarDivsRefs.current[idx] = element! }}
