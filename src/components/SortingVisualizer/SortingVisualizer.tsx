@@ -3,7 +3,7 @@ import {
   Box, Flex, Spacer, Slider, Text,
   SliderTrack,
   SliderFilledTrack,
-  SliderThumb, Heading, Select, Grid, Stack
+  SliderThumb, Heading, Select, Grid, Stack, Container, HStack
 } from "@chakra-ui/react"
 
 import { Button, ButtonGroup } from "@chakra-ui/react"
@@ -155,7 +155,7 @@ const SortingVisualizer = () => {
     <>
       <Heading size="2xl" padding={"4rem"}>Sorting Visualizer</Heading>
       <Flex width={"100%"} direction={"column"} >
-        <Grid templateColumns="repeat(auto-fit, 30px)" autoFlow='column' justifyContent="center" alignItems="end" height={`${BAR_HEIGHT + 20}px`} overflowX="auto">
+        <HStack justify="center" align="end" spacing="5px" overflowX="auto">
           {array.map((value, idx) => (<Box key={value} >
             <Box
               ref={(element) => { arrayBarDivsRefs.current[idx] = element! }}
@@ -166,8 +166,7 @@ const SortingVisualizer = () => {
           </Box>)
 
           )}
-        </Grid>
-
+        </HStack>
         <Flex direction={'column'} paddingTop={"2rem"} paddingBottom={"3rem"}>
           <Stack direction={["column", "row"]} justify="space-between" spacing={2}>
             <Stack direction={["column", "row"]} spacing={2}>
