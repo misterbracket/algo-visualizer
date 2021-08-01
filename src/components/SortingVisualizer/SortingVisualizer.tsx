@@ -22,11 +22,22 @@ function randomIntFromInterval(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
+function getUniqueRandomNumber(numberSet: any): any {
+  const num = randomIntFromInterval(5, BAR_HEIGHT)
+  if (!numberSet.has(num)) {
+    return num
+  }
+  return getUniqueRandomNumber(numberSet)
+}
 
 function initializeArray(numberOfBars = 15) {
   const array = []
+  let numberSet = new Set()
   for (let i = 0; i < numberOfBars; i++) {
-    array.push(randomIntFromInterval(5, BAR_HEIGHT));
+    const randomNumber = getUniqueRandomNumber(numberSet)
+    numberSet.add(randomNumber)
+    array.push(randomNumber);
+
   }
   return array
 }
@@ -41,8 +52,6 @@ const SortingVisualizer = () => {
   const [isAnimationRunning, setIsAnimationRunning] = useState(false)
 
   const arrayBarDivsRefs = useRef<HTMLDivElement[]>([]);
-  const arrayRef = useRef(array);
-  arrayRef.current = [...array]
 
 
   function resetArray() {
@@ -84,10 +93,6 @@ const SortingVisualizer = () => {
       setIsAnimationRunning(false)
     }, animations.length * animationSpeed)
   }
-
-  // function insertionSort() {
-  //   // We leave it as an exercise to the viewer of this code to implement this method.
-  // }
 
   // function selectionSort() {
   //   // We leave it as an exercise to the viewer of this code to implement this method.
@@ -138,6 +143,11 @@ const SortingVisualizer = () => {
         }, i * animationSpeed);
       }
     }
+
+    setIsAnimationRunning(true)
+    setTimeout(() => {
+      setIsAnimationRunning(false)
+    }, animatonsArray.length * animationSpeed)
   }
 
 
@@ -146,16 +156,16 @@ const SortingVisualizer = () => {
       <Heading size="3xl" padding={"4rem"}>Sorting Visualizer</Heading>
       <Flex width={"100%"} direction={"column"} >
         <Grid templateColumns="repeat(auto-fit, 30px)" autoFlow='column' style={{ justifyContent: "center" }} alignItems="end" height={`${BAR_HEIGHT + 20}px`} overflowX="auto">
-          {arrayRef.current.map((value, idx) => (
-            <Box key={idx} >
-              <Box
-                ref={(element) => { arrayBarDivsRefs.current[idx] = element! }}
-                background={PRIMARY_COLOR}
-                h={`${value}px`}
-                w={`${barWidth * 10}px`}
-              ></Box>
-            </Box>
-          ))}
+          {array.map((value, idx) => (<Box key={value} >
+            <Box
+              ref={(element) => { arrayBarDivsRefs.current[idx] = element! }}
+              background={PRIMARY_COLOR}
+              h={`${value}px`}
+              w={`${barWidth * 10}px`}
+            ></Box>
+          </Box>)
+
+          )}
         </Grid>
 
         <Flex direction={'column'} paddingTop={"2rem"} paddingBottom={"3rem"}>
