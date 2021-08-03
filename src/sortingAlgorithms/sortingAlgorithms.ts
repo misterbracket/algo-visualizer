@@ -93,6 +93,7 @@ function bubbleSortHelper(
     for (let i = 0; i < array.length - 1 - counter; i++) {
       animations.push([i, i + 1]);
       animations.push([i, i + 1]);
+      //TODO: remove heightOne and heightTwo; they are useless
       const heightOne = array[i];
       const heightTwo = array[i + 1];
       if (array[i] > array[i + 1]) {
@@ -114,7 +115,7 @@ function bubbleSortHelper(
   return animations;
 }
 
-export function getInsetionSortAnimations(array: Array<number>) {
+export function getInsertionSortAnimations(array: Array<number>) {
   const animations: Array<Array<number>> = [];
   const animatonsArray = insertionSortHelper(array, animations);
   return animatonsArray;
@@ -142,6 +143,61 @@ function insertionSortHelper(
           [j - 1, heightTwo],
         ]);
       }
+    }
+  }
+  return animations;
+}
+
+export function getQuickSortAnimations(array: Array<number>) {
+  const animations: Array<Array<number | Array<number>>> = [];
+  quickSortHelper(array, 0, array.length - 1);
+  function quickSortHelper(
+    array: Array<number>,
+    startIdx: number,
+    endIdx: number
+  ) {
+    if (startIdx >= endIdx) return;
+    const pivotIdx = startIdx;
+    let leftIdx = startIdx + 1;
+    let rightIdx = endIdx;
+    while (rightIdx >= leftIdx) {
+      animations.push([rightIdx, leftIdx]);
+      animations.push([rightIdx, leftIdx]);
+      if (
+        array[leftIdx] > array[pivotIdx] &&
+        array[rightIdx] < array[pivotIdx]
+      ) {
+        animations.push([
+          [leftIdx, array[rightIdx]],
+          [rightIdx, array[leftIdx]],
+        ]);
+        swap(leftIdx, rightIdx, array);
+      } else {
+        animations.push([
+          [leftIdx, array[leftIdx]],
+          [rightIdx, array[rightIdx]],
+        ]);
+      }
+
+      if (array[leftIdx] <= array[pivotIdx]) leftIdx++;
+      if (array[rightIdx] >= array[pivotIdx]) rightIdx--;
+    }
+    //Push the pivot and the right index twice to change color and then swap
+    animations.push([pivotIdx, rightIdx]);
+    animations.push([pivotIdx, rightIdx]);
+    animations.push([
+      [pivotIdx, array[rightIdx]],
+      [rightIdx, array[pivotIdx]],
+    ]);
+    swap(pivotIdx, rightIdx, array);
+    const leftSubarrayIsSmaller =
+      rightIdx - 1 - startIdx < endIdx - (rightIdx + 1);
+    if (leftSubarrayIsSmaller) {
+      quickSortHelper(array, startIdx, rightIdx - 1);
+      quickSortHelper(array, rightIdx + 1, endIdx);
+    } else {
+      quickSortHelper(array, rightIdx + 1, endIdx);
+      quickSortHelper(array, startIdx, rightIdx - 1);
     }
   }
   return animations;

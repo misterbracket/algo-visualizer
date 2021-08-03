@@ -7,7 +7,7 @@ import {
 } from "@chakra-ui/react"
 
 import { Button, ButtonGroup } from "@chakra-ui/react"
-import { getMergeSortAnimations, getBubbleSortAnimations, getInsetionSortAnimations } from '../../sortingAlgorithms/sortingAlgorithms';
+import { getMergeSortAnimations, getBubbleSortAnimations, getInsertionSortAnimations, getQuickSortAnimations } from '../../sortingAlgorithms/sortingAlgorithms';
 
 //Height of Single Bar
 const BAR_HEIGHT = 340;
@@ -94,26 +94,24 @@ const SortingVisualizer = () => {
     }, animations.length * animationSpeed)
   }
 
-  // function selectionSort() {
-  //   // We leave it as an exercise to the viewer of this code to implement this method.
-  // }
 
-  // function quickSort() {
-  //   // We leave it as an exercise to the viewer of this code to implement this method.
-  // }
 
   // function heapSort() {
   //   // We leave it as an exercise to the viewer of this code to implement this method.
   // }
 
-  function insertionsAndBubbleSort(algorithm: "bubble" | "insertion") {
+  function getSortingAnimations(algorithm: "bubble" | "insertion" | "quick") {
     let animatonsArray: Array<Array<number | Array<number>>>
     switch (algorithm) {
       case "bubble":
         animatonsArray = getBubbleSortAnimations([...array])
         break
       case "insertion":
-        animatonsArray = getInsetionSortAnimations([...array])
+        animatonsArray = getInsertionSortAnimations([...array])
+        break
+      case "quick":
+        animatonsArray = getQuickSortAnimations([...array])
+        console.log(animatonsArray)
         break
       default:
         animatonsArray = getBubbleSortAnimations([...array])
@@ -174,10 +172,10 @@ const SortingVisualizer = () => {
             </Stack>
             <Stack direction={["column", "row"]} spacing={2}>
               <Button isLoading={isAnimationRunning} colorScheme="teal" variant={"outline"} onClick={mergeSort}>Merge Sort</Button>
-              <Button isLoading={isAnimationRunning} colorScheme="teal" variant={"outline"} onClick={() => insertionsAndBubbleSort("insertion")}>Insertion Sort</Button>
-              {/* <Button colorScheme="teal" onClick={quickSort}>Quick Sort</Button>
-            <Button colorScheme="teal" onClick={heapSort}>Heap Sort</Button>*/}
-              <Button isLoading={isAnimationRunning} colorScheme="teal" variant={"outline"} onClick={() => insertionsAndBubbleSort("bubble")}>Bubble Sort</Button>
+              <Button isLoading={isAnimationRunning} colorScheme="teal" variant={"outline"} onClick={() => getSortingAnimations("insertion")}>Insertion Sort</Button>
+              <Button isLoading={isAnimationRunning} colorScheme="teal" variant={"outline"} onClick={() => getSortingAnimations("quick")}>Quick Sort</Button>
+              {/*   <Button colorScheme="teal" onClick={heapSort}>Heap Sort</Button>*/}
+              <Button isLoading={isAnimationRunning} colorScheme="teal" variant={"outline"} onClick={() => getSortingAnimations("bubble")}>Bubble Sort</Button>
             </Stack>
           </Stack>
           <ButtonGroup spacing={4} paddingTop={"0.5rem"}>
