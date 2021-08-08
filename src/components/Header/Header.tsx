@@ -9,7 +9,7 @@ const Header = () => {
       <IconButton variant="outline"
         colorScheme="teal"
         aria-label="Change  Color Scheme"
-        fontSize="20px" style={{ position: "absolute", right: "20px", top: "20px" }}
+        fontSize="20px" style={{ position: "absolute", right: "20px", top: "6rem" }}
         icon={<Icon as={colorMode === "light" ? CgSun : CgMoon} />}
         onClick={toggleColorMode}>
       </IconButton>

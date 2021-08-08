@@ -3,9 +3,9 @@ import {
   Box, Flex, Spacer, Slider, Text,
   SliderTrack,
   SliderFilledTrack,
-  SliderThumb, Heading, Select, Stack, HStack
+  SliderThumb, Select, Stack, HStack
 } from "@chakra-ui/react"
-
+import { MdGraphicEq } from "react-icons/md"
 import { Button, ButtonGroup } from "@chakra-ui/react"
 import { getMergeSortAnimations, getBubbleSortAnimations, getInsertionSortAnimations, getQuickSortAnimations } from '../../sortingAlgorithms/sortingAlgorithms';
 
@@ -13,7 +13,7 @@ import { getMergeSortAnimations, getBubbleSortAnimations, getInsertionSortAnimat
 const BAR_HEIGHT = 340;
 
 // This is the main color of the array bars.
-const PRIMARY_COLOR = 'hotpink';
+const PRIMARY_COLOR = 'teal';
 
 // This is the color of array bars that are being compared throughout the animations.
 const SECONDARY_COLOR = 'rebeccapurple';
@@ -46,7 +46,7 @@ function initializeArray(numberOfBars = 15) {
 const SortingVisualizer = () => {
 
   const [barWidth, setBarWidth] = useState(1)
-  const [animationSpeed, setAnimationSpeed] = useState(15)
+  const [animationSpeed, setAnimationSpeed] = useState(40)
   const [numberOfBars, setNumberOfBars] = useState(15)
   const [array, setArray] = useState(() => initializeArray(numberOfBars))
   const [isAnimationRunning, setIsAnimationRunning] = useState(false)
@@ -151,9 +151,17 @@ const SortingVisualizer = () => {
 
   return (
     <>
-      <Heading size="2xl" padding={"4rem"}>Sorting Visualizer</Heading>
+      <Text
+        bgGradient="linear(to-l, #7928CA,#FF0080)"
+        bgClip="text"
+        fontSize="6xl"
+        fontWeight="extrabold"
+        padding={"4rem"}
+      >
+        Sorting Visualizer</Text>
+      {/* <Heading textAlign={"center"} size="2xl" padding={"4rem"}>Sorting Visualizer</Heading> */}
       <Flex width={"100%"} direction={"column"} >
-        <HStack justify="center" align="flex-end" spacing="5px" overflowX="auto">
+        <HStack h={350} justify="center" align="flex-end" spacing="5px" overflowX="auto">
           {array.map((value, idx) => (<Box key={value} >
             <Box
               ref={(element) => { arrayBarDivsRefs.current[idx] = element! }}
@@ -168,7 +176,8 @@ const SortingVisualizer = () => {
         <Flex direction={'column'} paddingTop={"2rem"} paddingBottom={"3rem"}>
           <Stack direction={["column", "row"]} justify="space-between" spacing={2}>
             <Stack direction={["column", "row"]} spacing={2}>
-              <Button isLoading={isAnimationRunning} colorScheme="yellow" onClick={resetArray}>Generate New Array</Button>
+              <Button isLoading={isAnimationRunning} bgGradient="linear(to-l, #7928CA,#FF0080)" color={"white"}
+                fontWeight="extrabold" onClick={resetArray}>Generate New Array</Button>
             </Stack>
             <Stack direction={["column", "row"]} spacing={2}>
               <Button isLoading={isAnimationRunning} colorScheme="teal" variant={"outline"} onClick={mergeSort}>Merge Sort</Button>
@@ -178,41 +187,43 @@ const SortingVisualizer = () => {
               <Button isLoading={isAnimationRunning} colorScheme="teal" variant={"outline"} onClick={() => getSortingAnimations("bubble")}>Bubble Sort</Button>
             </Stack>
           </Stack>
-          <ButtonGroup spacing={4} paddingTop={"0.5rem"}>
-            <Flex width={"100%"} direction={"column"}>
-              <Text as={"label"} htmlFor={"bar-width-select"}>Bar Width</Text>
-              <Select height={10} placeholder="Select Bar Width" aria-label="bar-width-select" name={"bar-width-select"} onChange={event => setBarWidth(parseFloat(event.target.value))}>
-                <option value={0.5}>Extra Thin</option>
-                <option value={1}>Thin</option>
-                <option value={1.5}>Medium</option>
-                <option value={2.5}>Large</option>
-              </Select>
-            </Flex>
-            <Spacer />
-            <Flex width={"100%"} direction={"column"}>
-              <Text as={"label"} htmlFor={"bar-number-slider"}>Number of Bars</Text>
-              <Slider height={10} disabled={isAnimationRunning} colorScheme="teal" aria-label="bar-number-slider" defaultValue={numberOfBars} min={10} max={30} onChange={num => changeNumberOfBars(num)}>
-                <SliderTrack>
-                  <SliderFilledTrack />
-                </SliderTrack>
-                <SliderThumb boxSize={6}>
-                  <Box color="tomato" />
-                </SliderThumb>
-              </Slider>
-            </Flex>
-            <Spacer />
-            <Flex width={"100%"} direction={"column"}>
-              <Text as={"label"} htmlFor={"bar-number-slider"}>Animation Speed</Text>
-              <Slider height={10} isDisabled={isAnimationRunning} colorScheme="teal" aria-label="bar-number-slider" defaultValue={animationSpeed} min={15} max={1500} onChange={number => setAnimationSpeed(number)}>
-                <SliderTrack>
-                  <SliderFilledTrack />
-                </SliderTrack>
-                <SliderThumb boxSize={6}>
-                  <Box color="tomato" />
-                </SliderThumb>
-
-              </Slider>
-            </Flex>
+          <ButtonGroup spacing={4} paddingTop="2rem">
+            <Stack width="100%" direction={["column", "row"]} spacing={2}>
+              <Flex width={"100%"} direction={"column"}>
+                <Text as={"label"} htmlFor={"bar-width-select"}>Bar Width</Text>
+                <Select height={10} placeholder="Select Bar Width" aria-label="bar-width-select" name={"bar-width-select"} onChange={event => setBarWidth(parseFloat(event.target.value))}>
+                  <option value={0.5}>Extra Thin</option>
+                  <option value={1}>Thin</option>
+                  <option value={1.5}>Medium</option>
+                  <option value={2.5}>Large</option>
+                </Select>
+              </Flex>
+              <Spacer />
+              <Flex width={"100%"} direction={"column"}>
+                <Text as={"label"} htmlFor={"bar-number-slider"}>Number of Bars</Text>
+                <Slider height={10} disabled={isAnimationRunning} colorScheme="teal" aria-label="bar-number-slider" defaultValue={numberOfBars} min={10} max={30} onChange={num => changeNumberOfBars(num)}>
+                  <SliderTrack>
+                    <SliderFilledTrack />
+                  </SliderTrack>
+                  <SliderThumb boxSize={6}>
+                    <Box color="teal" as={MdGraphicEq} />
+                  </SliderThumb>
+                </Slider>
+              </Flex>
+              <Spacer />
+              <Flex width={"100%"} direction={"column"}>
+                <Text as={"label"} htmlFor={"bar-number-slider"}>Animation Speed</Text>
+                <Slider height={10} isDisabled={isAnimationRunning} step={30}
+                  colorScheme="teal" aria-label="bar-number-slider" defaultValue={animationSpeed} min={10} max={310} onChange={number => setAnimationSpeed(number)}>
+                  <SliderTrack >
+                    <SliderFilledTrack />
+                  </SliderTrack>
+                  <SliderThumb boxSize={6}>
+                    <Box color="teal" as={MdGraphicEq} />
+                  </SliderThumb>
+                </Slider>
+              </Flex>
+            </Stack>
           </ButtonGroup >
         </Flex >
       </Flex >
