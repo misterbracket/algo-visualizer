@@ -176,7 +176,10 @@ const SortingVisualizer = () => {
         <Flex direction={'column'} paddingTop={"2rem"} paddingBottom={"3rem"}>
           <Stack direction={["column", "row"]} justify="space-between" spacing={2}>
             <Stack direction={["column", "row"]} spacing={2}>
-              <Button isLoading={isAnimationRunning} bgGradient="linear(to-l, #7928CA,#FF0080)" color={"white"}
+              <Button isLoading={isAnimationRunning} bgGradient="linear(to-l, #7928CA,#FF0080)"
+                // _hover={{ bg: "#2255a3" }}
+                _hover={{ bg: "linear-gradient(90deg, rgba(121,40,202,1) 0%, rgba(255,0,128,1) 90%)" }}
+                color={"white"}
                 fontWeight="extrabold" onClick={resetArray}>Generate New Array</Button>
             </Stack>
             <Stack direction={["column", "row"]} spacing={2}>
