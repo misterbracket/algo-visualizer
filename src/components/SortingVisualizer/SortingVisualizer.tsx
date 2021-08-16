@@ -8,6 +8,7 @@ import {
 import { MdGraphicEq } from "react-icons/md"
 import { Button, ButtonGroup } from "@chakra-ui/react"
 import { getMergeSortAnimations, getBubbleSortAnimations, getInsertionSortAnimations, getQuickSortAnimations } from '../../sortingAlgorithms/sortingAlgorithms';
+import Icon from '../Icon/Icon';
 
 //Height of Single Bar
 const BAR_HEIGHT = 340;
@@ -151,15 +152,17 @@ const SortingVisualizer = () => {
 
   return (
     <>
-      <Text
-        bgGradient="linear(to-l, #7928CA,#FF0080)"
-        bgClip="text"
-        fontSize="6xl"
-        fontWeight="extrabold"
-        padding={"4rem"}
-      >
-        Sorting Visualizer</Text>
-      {/* <Heading textAlign={"center"} size="2xl" padding={"4rem"}>Sorting Visualizer</Heading> */}
+      <HStack>
+        <Icon width={40} height={40}></Icon>
+        <Text
+          bgGradient="linear(to-l, #7928CA,#FF0080)"
+          bgClip="text"
+          fontSize="6xl"
+          fontWeight="extrabold"
+          padding={"4rem 4rem 4rem 0rem"}
+        >
+          Sorting Visualizer</Text>
+      </HStack>
       <Flex width={"100%"} direction={"column"} >
         <HStack h={350} justify="center" align="flex-end" spacing="5px" overflowX="auto">
           {array.map((value, idx) => (<Box key={value} >
