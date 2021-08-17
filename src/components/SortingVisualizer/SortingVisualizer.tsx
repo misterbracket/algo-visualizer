@@ -152,17 +152,6 @@ const SortingVisualizer = () => {
 
   return (
     <>
-      <HStack>
-        <Icon width={40} height={40}></Icon>
-        <Text
-          bgGradient="linear(to-l, #7928CA,#FF0080)"
-          bgClip="text"
-          fontSize="6xl"
-          fontWeight="extrabold"
-          padding={"4rem 4rem 4rem 0rem"}
-        >
-          Sorting Visualizer</Text>
-      </HStack>
       <Flex width={"100%"} direction={"column"} >
         <HStack h={350} justify="center" align="flex-end" spacing="5px" overflowX="auto">
           {array.map((value, idx) => (<Box key={value} >
