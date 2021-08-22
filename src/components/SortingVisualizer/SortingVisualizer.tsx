@@ -8,7 +8,6 @@ import {
 import { MdGraphicEq } from "react-icons/md"
 import { Button, ButtonGroup } from "@chakra-ui/react"
 import { getMergeSortAnimations, getBubbleSortAnimations, getInsertionSortAnimations, getQuickSortAnimations } from '../../sortingAlgorithms/sortingAlgorithms';
-import Icon from '../Icon/Icon';
 
 //Height of Single Bar
 const BAR_HEIGHT = 340;
